@@ -1,0 +1,16 @@
+{
+  "name": "march22-js",
+  "version": "1.0.0",
+  "description": "March22 engine in JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp build"
+  },
+  "author": "Sam Lynch",
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^16.1.0",
+    "gulp": "^3.9.1"
+  }
+}
