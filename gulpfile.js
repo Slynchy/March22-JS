@@ -10,23 +10,33 @@ gulp.task('build', function () {
 	} else {
 		let files = fs.readdirSync('./build');
 		for(let k in files){
+			if(fs.lstatSync('./build/' + files[k]).isDirectory() === true) continue;
 			fs.unlinkSync('./build/' + files[k]);
 		}
 		files = fs.readdirSync('./build/scripts');
 		for(let k in files){
-			fs.unlinkSync('./build/' + files[k]);
+			fs.unlinkSync('./build/scripts' + files[k]);
 		}
 	}
 
 	fs.createReadStream("./src/index.html").pipe(fs.createWriteStream("./build/index.html"));
 
-	for(let k in fs.readdirSync('./src/scripts')){
+	//for(let k in fs.readdirSync('./src/scripts')){
 
+	//}
+
+	try
+	{
+
+		let result = fs.createWriteStream('./build/main.min.js');
+		let b = browserify();
+		b.add('./src/main.js');
+		b.bundle().pipe(result);
+	}
+	catch(err)
+	{
+		console.log(err.stack);
 	}
 
-	let result = fs.createWriteStream('./build/main.min.js');
-	let b = browserify();
-	b.add('./src/main.js');
-	b.bundle().pipe(result);
 
 });
