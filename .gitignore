@@ -62,3 +62,5 @@ typings/
 
 # Don't include minified index.js
 index.min.js
+
+build/
