@@ -1,67 +1,8 @@
-let M22Script = require("./M22Script.js");
-
-if (!String.prototype.hashCode) {
-	String.prototype.hashCode = function () {
-		let hash = 0, i, chr;
-		if (this.length === 0) return hash;
-		for (i = 0; i < this.length; i++) {
-			chr = this.charCodeAt(i);
-			hash = ((hash << 5) - hash) + chr;
-			hash |= 0; // Convert to 32bit integer
-		}
-		return hash;
-	};
-}
-
-function LoadTextFileAsString(filename, callback){
-	let client = new XMLHttpRequest();
-	client.open('GET', filename);
-	client.onload = function() {
-		callback(client.responseText);
-	};
-	client.send();
-}
-global.LoadTextFileAsString = LoadTextFileAsString;
-
-function SplitString(string, charToSplit){
-	return string.split(charToSplit);
-}
-global.SplitString = SplitString;
-
-class line_c {
-	constructor(props) {
-		this.m_lineType = ScriptCompiler.LINETYPES.NULL_OPERATOR;
-		this.m_lineTypeSecondary = ScriptCompiler.LINETYPES.NULL_OPERATOR;
-
-		this.m_parameters = [];
-
-		this.m_lineContents = "";
-
-		this.m_speaker = "";
-
-		this.m_ID = 0;
-
-		this.m_origScriptPos = 0; // used to tell where it is in the original script
-
-		if (props) {
-			Object.assign(this, props);
-		}
-	}
-}
-
-class script_checkpoint {
-	constructor(_a, _b) {
-		this.m_position = _a;
-		this.m_name = _b;
-	};
-}
-
-class script_character {
-	constructor(_a, _b) {
-		this.name = _a;
-		this.color = _b;
-	};
-}
+let M22Script = require("./objects/M22Script.js");
+let line_c = require("./objects/line_c.js");
+let script_checkpoint = require("./objects/script_checkpoint.js");
+let script_character = require("./objects/script_character.js");
+let MiscFunctions = require("./MiscFunctions.js");
 
 class ScriptCompiler {
 
@@ -141,18 +82,6 @@ class ScriptCompiler {
 			LERP: 1,
 			NUM_OF_ANIMATION_TYPES
 		};
-	}
-
-	static IsNewLine(_s) {
-		return (_s === "\r\n" || _s === "\n" || _s === '');
-	}
-
-	static IsComment(_s) {
-		if (_s.length === 0) return true;
-		if (_s.length === 1) return false;
-		_s = _s.trim();
-
-		return (_s[0] === '/' && _s[1] === '/');
 	}
 
 	static _processCharNamesFile(_charNames) {
@@ -268,22 +197,22 @@ class ScriptCompiler {
 
 		let result = new M22Script();
 
-		LoadTextFileAsString('./scripts/CHARACTER_NAMES.txt', (charNames)=> {
+		MiscFunctions.LoadTextFileAsString('./scripts/CHARACTER_NAMES.txt', (charNames)=> {
 
 			charNames = this._processCharNamesFile(charNames);
 
-			LoadTextFileAsString('./scripts/VARIABLES.txt', (variables) => {
+			MiscFunctions.LoadTextFileAsString('./scripts/VARIABLES.txt', (variables) => {
 
 				variables = this._processVariablesFile(variables);
 
-				LoadTextFileAsString('./scripts/' + filename + '.txt', (scriptFile) => {
+				MiscFunctions.LoadTextFileAsString('./scripts/' + filename + '.txt', (scriptFile) => {
 
 					if (scriptFile.length === 0) {
 						callback(result);
 						return;
 					}
 
-					scriptFile = SplitString(scriptFile, '\n');
+					scriptFile = scriptFile.split('\n');
 
 					let checkpoints = [];
 
@@ -320,14 +249,14 @@ class ScriptCompiler {
 		let tempLine_c = new line_c();
 		_funcStr = _funcStr.trim();
 
-		if (ScriptCompiler.IsNewLine(_funcStr)) {
+		if (MiscFunctions.IsNewLine(_funcStr)) {
 			return tempLine_c;
 		}
-		else if (_funcStr.Length === 0 || (ScriptCompiler.IsComment(_funcStr))) {
+		else if (_funcStr.Length === 0 || (MiscFunctions.IsComment(_funcStr))) {
 			return tempLine_c;
 		}
 
-		CURRENT_LINE_SPLIT = SplitString(_funcStr, ' ');
+		CURRENT_LINE_SPLIT = _funcStr.split(' ');
 		if (CURRENT_LINE_SPLIT.Count === 0) return tempLine_c;
 		tempLine_c.m_origScriptPos = _scriptPos + 1;
 		tempLine_c.m_lineType = ScriptCompiler.GetLineType(CURRENT_LINE_SPLIT[0]);
@@ -750,4 +679,4 @@ class ScriptCompiler {
 
 }
 
-module.exports = global.M22.ScriptCompiler = ScriptCompiler;
+module.exports = ScriptCompiler;

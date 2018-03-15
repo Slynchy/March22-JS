@@ -43,4 +43,4 @@ class M22Script {
 
 }
 
-module.exports = global.M22.M22Script = M22Script;
+module.exports = M22Script;
