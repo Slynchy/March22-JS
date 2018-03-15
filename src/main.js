@@ -1,5 +1,4 @@
 global.M22 = {};
+require('./ScriptCompiler.js');
 
-M22.ScriptCompiler = require('./ScriptCompiler.js');
-
-console.log("yay");
+document.write("yay");
