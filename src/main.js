@@ -1,4 +1,7 @@
 global.M22 = {};
 require('./ScriptCompiler.js');
 
-document.write("yay");
+M22.ScriptCompiler.CompileScript('START_SCRIPT', (data)=>{
+	document.write(JSON.stringify(data));
+	console.log(data);
+});

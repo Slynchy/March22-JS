@@ -16,7 +16,7 @@ if (!String.prototype.hashCode) {
 function LoadTextFileAsString(filename, callback){
 	let client = new XMLHttpRequest();
 	client.open('GET', filename);
-	client.onreadystatechange = function() {
+	client.onload = function() {
 		callback(client.responseText);
 	};
 	client.send();
@@ -34,9 +34,8 @@ class line_c {
 		this.m_lineTypeSecondary = ScriptCompiler.LINETYPES.NULL_OPERATOR;
 
 		this.m_parameters = [];
-		//m_parameters_txt = [];
 
-		this.m_lineContents = {};
+		this.m_lineContents = "";
 
 		this.m_speaker = "";
 
@@ -66,14 +65,14 @@ class script_character {
 
 class ScriptCompiler {
 
-	get CHAR_NAMES() {
+	static CHAR_NAMES() {
 		if (!this._charNames) {
-			this._initializeCharNames();
+			return {};
 		}
 		return this._charNames;
 	}
 
-	get FUNC_HASHES() {
+	static get FUNC_HASHES() {
 		if (!this._funcHashes) {
 			this._funcHashes = {};
 			for(let k in this.LINETYPES){
@@ -85,7 +84,7 @@ class ScriptCompiler {
 		return this._funcHashes;
 	}
 
-	get VARIABLES() {
+	static get VARIABLES() {
 		if (!this._variables) {
 			this._variables = {
 				"varName": "varData"
@@ -145,7 +144,7 @@ class ScriptCompiler {
 	}
 
 	static IsNewLine(_s) {
-		return (_s === "\r\n" || _s === "\n");
+		return (_s === "\r\n" || _s === "\n" || _s === '');
 	}
 
 	static IsComment(_s) {
@@ -156,12 +155,39 @@ class ScriptCompiler {
 		return (_s[0] === '/' && _s[1] === '/');
 	}
 
-	_initializeCharNames() {
+	static _processCharNamesFile(_charNames) {
 		this._charNames = {};
 
-		// TODO: _initializeCharNames
-		// Load CHARACTER_NAMES.txt
-		// Add /n/n to end of file
+		_charNames += "\n\n"; // hack
+
+		let lines = _charNames.split('\n');
+
+		for(let i = 0; i < lines.length; i++){
+			let line = lines[i].trim();
+
+			if(line.length < 2) continue;
+
+			let split = line.split(' ');
+
+			for(let k in split){
+				split[k] = split[k].trim();
+			}
+
+
+			if(split.length < 5) continue;
+
+			this._charNames[split[0].hashCode()] = {
+				name: split[1],
+				color: {
+					r: parseInt(split[2]),
+					g: parseInt(split[3]),
+					b: parseInt(split[4])
+				}
+			};
+		}
+
+		return this._charNames;
+
 		// Sort into array of lines
 		// For each line
 			// add a character name + hash to array
@@ -177,77 +203,119 @@ class ScriptCompiler {
 		} else {
 			if(_s.length > 1){
 				if(_s[0] === '-' && _s[1] === '-'){
-					return this.FUNC_HASHES.CHECKPOINT;
+					return this.FUNC_HASHES[this.LINETYPES.CHECKPOINT.hashCode()];
 				} else if(_s[0] === '/' && _s[1] === '/'){
-					return this.FUNC_HASHES.COMMENT;
+					return this.FUNC_HASHES[this.LINETYPES.COMMENT.hashCode()];
 				} else {
 					if(this.CHAR_NAMES.hasOwnProperty(hash)){
 						return this.CHAR_NAMES[hash];
 					} else {
-						return this.FUNC_HASHES.NARRATIVE;
+						return this.FUNC_HASHES[this.LINETYPES.NARRATIVE.hashCode()];
 					}
 				}
 			} else {
-				return this.FUNC_HASHES.NARRATIVE;
+				return this.FUNC_HASHES[this.LINETYPES.NARRATIVE.hashCode()];
 			}
 		}
 	}
 
 	static _replaceVariablesInLine(line, variables){
-		// TODO: _replaceVariablesInLine
+		for (let k in variables)
+		{
+			let tempStr = "[[" + k + "]]";
+			line = line.replace(tempStr, variables[k]);
+		}
+		return line;
 	}
 
 	static _processVariablesFile(variables){
-		// TODO: _processVariablesFile
-		return variables;
+		let output = {};
+
+		let lines = variables.split('\n');
+
+		for(let i = 0; i < lines.length; i++){
+			let line = lines[i];
+
+			line = line.trim();
+
+			if(line.length < 2) continue;
+
+			let split = line.split('===');
+
+			for(let k in split){
+				split[k] = split[k].trim();
+			}
+
+			if(split.length < 2) continue;
+
+			output[split[0]] = split[1];
+		}
+
+		// split file by newline
+		// for each line:
+			// trim
+			// Check if empty
+			// split each line by ===
+			// trim that
+			// Add key + data to array
+		// return array
+
+		return output;
 	}
 
 	static CompileScript(filename, callback){
-		// TODO: CompileScript
+		let start = Date.now();
 
 		let result = new M22Script();
 
-		LoadTextFileAsString('./scripts/VARIABLES.txt', (variables)=>{
+		LoadTextFileAsString('./scripts/CHARACTER_NAMES.txt', (charNames)=> {
 
-			variables = this._processVariablesFile(variables);
+			charNames = this._processCharNamesFile(charNames);
 
-			LoadTextFileAsString('./scripts/' + filename + '.txt', (scriptFile)=>{
+			LoadTextFileAsString('./scripts/VARIABLES.txt', (variables) => {
 
-				if(scriptFile.length === 0){
-					callback(result);
-					return;
-				}
+				variables = this._processVariablesFile(variables);
 
-				scriptFile = SplitString(scriptFile, '\n');
+				LoadTextFileAsString('./scripts/' + filename + '.txt', (scriptFile) => {
 
-				for(let i = 0; i < scriptFile.length; i++){
-					let currentLine = scriptFile[i];
-
-					for (let k in variables)
-					{
-						let tempStr = "[[" + k + "]]";
-						currentLine = currentLine.replace(tempStr, variables[k]);
+					if (scriptFile.length === 0) {
+						callback(result);
+						return;
 					}
 
-					result.AddLine(currentLine);
-				}
+					scriptFile = SplitString(scriptFile, '\n');
 
-				callback(result);
+					let checkpoints = [];
+
+					let lineCounter = 0;
+					for (let i = 0; i < scriptFile.length; i++) {
+						let currentLine = scriptFile[i];
+
+						currentLine = currentLine.trim();
+
+						currentLine = this._replaceVariablesInLine(currentLine, variables);
+
+						currentLine = this.CompileLine(currentLine, i, checkpoints);
+
+						if (currentLine.m_lineType !== this.LINETYPES.NULL_OPERATOR) {
+							currentLine.m_ID = ++lineCounter;
+							result.AddLine(currentLine);
+						}
+					}
+
+					result.checkpoints = checkpoints;
+					result.variables = variables;
+					result.charNames = charNames;
+
+					console.log("Script compile took %ims", Date.now() - start);
+
+					callback(result);
+				});
 			});
 		});
-
-		// Load variables/flags file (?)
-		// Load script file as string
-			// if length === 0 throw error
-		// Split script file by lines
-		// Iterate over lines
-			// replace variables
-			// compile line
-			// Add compiled line to the M22Script object
-		// Return script
 	}
 
-	static CompileLine(_funcStr, _scriptPos) {
+	static CompileLine(_funcStr, _scriptPos, _chkpnt) {
 		let CURRENT_LINE_SPLIT = [];
 		let tempLine_c = new line_c();
 		_funcStr = _funcStr.trim();
@@ -285,9 +353,392 @@ class ScriptCompiler {
 			}
 		}
 		else {
-			//CompileLine(tempLine_c, CURRENT_LINE_SPLIT, currentScript_checkpoints, _scriptPos);
+			this.CompileFunction(tempLine_c, CURRENT_LINE_SPLIT, _chkpnt, _scriptPos);
+
 		}
 		return tempLine_c;
+	}
+
+	static CompileFunction(_lineC, _splitStr, _chkpnt, _scriptPos){
+		switch (_lineC.m_lineType)
+		{
+			case this.LINETYPES.CHECKPOINT:
+				_splitStr[0] = _splitStr[0].substring(2);
+				_splitStr[0] = _splitStr[0].trim();
+				_chkpnt.push(new script_checkpoint(_scriptPos, _splitStr[0]));
+				break;
+			case this.LINETYPES.ANIMATION_TYPE:
+				if (_splitStr.length > 1)
+				{
+					_lineC.m_parameters = [];
+					_splitStr[1] = _splitStr[1].toLowerCase();
+					if (_splitStr[1] === ("lerp"))
+					{
+						_lineC.m_parameters.push(_splitStr[1]);
+					}
+					else if (_splitStr[1] === ("smooth"))
+					{
+						_lineC.m_parameters.push(_splitStr[1]);
+					}
+					else
+					{
+						console.error("Invalid animation type at line {0}!", _lineC.m_origScriptPos);
+						_lineC.m_parameters.push('lerp');
+					}
+				}
+				break;
+			case this.LINETYPES.TEXT_SPEED:
+			case this.LINETYPES.MOVEMENT_SPEED:
+				if (_splitStr.length > 1)
+				{
+					_lineC.m_parameters = [];
+					_lineC.m_parameters.push(_splitStr[1]);
+				}
+				break;
+			case this.LINETYPES.SET_ACTIVE_TRANSITION:
+				if (_splitStr.length > 1)
+				{
+					_lineC.m_parameters = [];
+					_splitStr[1] = _splitStr[1].trim();
+					_lineC.m_parameters.push(_splitStr[1]);
+				}
+				break;
+			case this.LINETYPES.GOTO:
+				if (_splitStr.length > 1)
+				{
+					_lineC.m_parameters = [];
+					_splitStr[1] = _splitStr[1].trim();
+					_lineC.m_parameters.push(_splitStr[1]);
+				}
+				break;
+			case this.LINETYPES.NEW_PAGE:
+				break;
+			case this.LINETYPES.DRAW_CHARACTER:
+				if (_splitStr.length > 1)
+				{
+					if (_splitStr.length < 4) console.error("Not enough parameters for DrawCharacter @ Line %s", _lineC.m_origScriptPos.toString());
+					_lineC.m_parameters = [];
+					_lineC.m_parameters.push(_splitStr[1]);
+					_lineC.m_parameters.push(_splitStr[2]);
+					_lineC.m_parameters.push(parseInt(_splitStr[3]));
+					if(_splitStr.length >= 5)
+					{
+						if(_splitStr[4] === ("true"))
+							_lineC.m_parameters.push(true);
+						else
+							_lineC.m_parameters.push(false);
+					}
+					else
+						_lineC.m_parameters.push(false);
+
+					// TODO: implement character loading?
+					console.warn("" + _lineC.m_lineType + " not fully implemented");
+						// if (!M22.VNHandler.LoadCharacter(_lineC.m_parameters_txt[0], _lineC.m_parameters_txt[1]))
+						// {
+						// 	UnityWrapper.LogErrorFormat("Failed to load character \"{0}\" at line {1}!", (_lineC.m_parameters_txt[0] + " - " + _lineC.m_parameters_txt[1]), _lineC.m_origScriptPos);
+						// };
+				}
+				break;
+			case this.LINETYPES.WAIT:
+				_lineC.m_parameters = [];
+				if (_splitStr.length > 1)
+					_lineC.m_parameters.push(parseInt(_splitStr[1]));
+				else
+					_lineC.m_parameters.push(1000);
+				break;
+			case this.LINETYPES.CLEAR_CHARACTERS:
+				_lineC.m_parameters = [];
+				if (_splitStr.length > 1 && _splitStr[1] === ("true"))
+				{
+					_lineC.m_parameters.push(true);
+				}
+				else
+					_lineC.m_parameters.push(false);
+				break;
+			case this.LINETYPES.PLAY_STING:
+				if (_splitStr.length > 1)
+				{
+					_lineC.m_parameters = [];
+					_splitStr[1] = _splitStr[1].trim();
+					_lineC.m_parameters.push(_splitStr[1]);
+
+					// TODO: implement audio loading?
+					console.warn("" + _lineC.m_lineType + " not fully implemented");
+						// if (!M22.AudioMaster.LoadSting(_lineC.m_parameters_txt[0]))
+						// {
+						// 	UnityWrapper.LogError("Failed to load sting! - " + _lineC.m_parameters_txt[0]);
+						// };
+				}
+				break;
+			case this.LINETYPES.PLAY_MUSIC:
+				if (_splitStr.length > 1)
+				{
+					_lineC.m_parameters = [];
+					_splitStr[1] = _splitStr[1].trim();
+					_lineC.m_parameters.push(_splitStr[1]);
+
+					// TODO: implement music loading?
+					console.warn("" + _lineC.m_lineType + " not fully implemented");
+						// if (!M22.AudioMaster.LoadMusic(_lineC.m_parameters_txt[0]))
+						// {
+						// 	UnityWrapper.LogErrorFormat("Failed to load music file \"{0}\" at line {1}!", _lineC.m_parameters_txt[0], _lineC.m_origScriptPos);
+						// };
+				}
+				break;
+			case this.LINETYPES.EXECUTE_FUNCTION:
+				if (_splitStr.length > 1)
+				{
+					_lineC.m_parameters = [];
+					for (let i = 1; i < _splitStr.length-1; i++)
+					{
+						_lineC.m_parameters.push(_splitStr[i]);
+					}
+					_splitStr[_splitStr.length - 1] = _splitStr[_splitStr.length - 1].trim();
+					_lineC.m_parameters.push(_splitStr[_splitStr.length - 1]);
+
+					// should be 4
+					while(_lineC.m_parameters.length < 4)
+						_lineC.m_parameters.push(null);
+
+					// TODO: implement custom funcs?
+					console.warn("" + _lineC.m_lineType + " not fully implemented");
+						// if(CustomFunctionHandler.CheckFunctionExists(_lineC.m_parameters_txt[0]) == false)
+						// {
+						// 	UnityWrapper.LogErrorFormat("Custom function \"{0}\" does not exist at line {1}!", _lineC.m_parameters_txt[0], _lineC.m_origScriptPos);
+						// }
+				}
+				break;
+			case this.LINETYPES.STOP_MUSIC:
+				if (_splitStr.length > 1)
+				{
+					_lineC.m_parameters = [];
+					_lineC.m_parameters.push(_splitStr[1]);
+				}
+				// we store the float value as a string for later use, if provided.
+				// otherwise, just continue
+				break;
+			case this.LINETYPES.TRANSITION:
+				if (_splitStr.length > 1)
+				{
+					_lineC.m_parameters = [];
+					for (let i = 1; i < _splitStr.length; i++)
+					{
+						_lineC.m_parameters.push(_splitStr[i]);
+					}
+
+					// TODO: Implement background loading?
+					console.warn("" + _lineC.m_lineType + " not fully implemented");
+						// if (!M22.BackgroundMaster.LoadBackground(_lineC.m_parameters_txt[0]))
+						// {
+						// 	UnityWrapper.LogErrorFormat("Failed to load background - \"{0}\"", _lineC.m_parameters_txt[0]);
+						// 	// failed to load bg!
+						// };
+				}
+				break;
+			case this.LINETYPES.DRAW_BACKGROUND:
+				if (_splitStr.length >= 2)
+				{
+					_lineC.m_parameters = [];
+					_lineC.m_parameters.push(_splitStr[1]);
+					if (_splitStr.length >= 3)
+					{
+						_lineC.m_parameters.push(parseInt(_splitStr[2]));
+						if (_splitStr.length >= 4)
+							_lineC.m_parameters.push(parseInt(_splitStr[3]));
+						if (_splitStr.length >= 5)
+							_lineC.m_parameters.push(_splitStr[4]);
+						if (_splitStr.length >= 6)
+							_lineC.m_parameters.push(_splitStr[5]);
+					}
+					else
+					{
+						_lineC.m_parameters.push(0);
+						_lineC.m_parameters.push(0);
+						_lineC.m_parameters.push("1.0");
+						_lineC.m_parameters.push("1.0");
+					}
+
+					if (_splitStr[_splitStr.length-1] === ("true"))
+						_lineC.m_parameters.push(true);
+					else
+						_lineC.m_parameters.push(false);
+
+					// TODO: Implement background loading?
+					console.warn("" + _lineC.m_lineType + " not fully implemented");
+						// if (!M22.BackgroundMaster.LoadBackground(_lineC.m_parameters_txt[0]))
+						// {
+						// 	UnityWrapper.LogErrorFormat("Failed to load background \"{0}\" at line {1}", _lineC.m_parameters_txt[0], _lineC.m_origScriptPos);
+						// };
+				}
+				else
+					console.error("Not enough parameters on DrawBackground at line %i", _lineC.m_origScriptPos);
+				break;
+			case this.LINETYPES.ENABLE_NOVEL_MODE:
+				break;
+			case this.LINETYPES.DISABLE_NOVEL_MODE:
+				break;
+			case this.LINETYPES.PLAY_VIDEO:
+				if (_splitStr.length > 1)
+				{
+					_lineC.m_parameters = [];
+					_lineC.m_parameters.push(_splitStr[1]);
+
+					// TODO: Implement video file loading?
+					console.warn("" + _lineC.m_lineType + " not fully implemented");
+						// if(M22.ScriptMaster.LoadVideoFile(_splitStr[1]) == false)
+						// {
+						// 	UnityWrapper.LogError("Failed to load video file: " + _splitStr[1]);
+						// }
+				}
+				break;
+			case this.LINETYPES.CLEAR_CHARACTER:
+				if (_splitStr.length >= 2)
+				{
+					_lineC.m_parameters = [];
+					_lineC.m_parameters.push(_splitStr[1]);
+					if (_splitStr.length >= 3)
+					{
+						if (_splitStr[2] === ("true"))
+							_lineC.m_parameters.push(true);
+						else
+							_lineC.m_parameters.push(false);
+					}
+					else
+						_lineC.m_parameters.push(false);
+				}
+				break;
+			case this.LINETYPES.LOAD_SCRIPT:
+			case this.LINETYPES.HIDE_WINDOW:
+			case this.LINETYPES.SHOW_WINDOW:
+				if (_splitStr.length > 1)
+				{
+					_lineC.m_parameters.push(_splitStr[1]);
+				}
+				break;
+			case this.LINETYPES.SET_FLAG:
+				if (_splitStr.length > 1)
+				{
+					_splitStr[1] = _splitStr[1].trim();
+					_lineC.m_parameters.push(_splitStr[1]);
+				}
+				break;
+			case this.LINETYPES.IF_STATEMENT:
+				// m22IF _flag_to_check_if_true Command [params]
+				if (_splitStr.length > 1)
+				{
+					_lineC.m_parameters.push(_splitStr[1]);
+
+					let tempCompiledLine = new line_c();
+					let functionSplit = [];
+					for (let i = 2; i < _splitStr.length; i++)
+					{
+						functionSplit.push(_splitStr[i]);
+					}
+					tempCompiledLine.m_lineType = this.GetLineType(_splitStr[2]);
+
+					tempCompiledLine = this.CompileFunction(tempCompiledLine, functionSplit, _chkpnt, _scriptPos);
+
+					if(tempCompiledLine.m_lineContents == null)
+					{
+						tempCompiledLine.m_lineContents = "";
+						for (let i = 2; i < _splitStr.length; i++)
+						{
+							tempCompiledLine.m_lineContents += _splitStr[i] + " ";
+						}
+					}
+					tempCompiledLine.m_lineContents = tempCompiledLine.m_lineContents.replace("\\n", "\n");
+					_lineC.m_lineContents = tempCompiledLine.m_lineContents;
+					_lineC.m_lineTypeSecondary = tempCompiledLine.m_lineType;
+
+					if(tempCompiledLine.m_parameters.length !== 0)
+					{
+						for (let i = 0; i < tempCompiledLine.m_parameters.length; i++)
+						{
+							_lineC.m_parameters.push(tempCompiledLine.m_parameters[i]);
+						}
+					}
+				}
+				break;
+			case this.LINETYPES.PLAY_SFX_LOOPED:
+				if (_splitStr.length > 1)
+				{
+					_lineC.m_parameters.push(_splitStr[1]);
+
+					if(_splitStr.length > 3)
+					{
+						_lineC.m_parameters.push(_splitStr[2]);
+						_lineC.m_parameters.push(_splitStr[3]);
+					}
+					else
+					{
+						_lineC.m_parameters.push("1.0");
+						_lineC.m_parameters.push("1.0");
+					}
+
+					// TODO: Implement audio file loading?
+					console.warn("" + _lineC.m_lineType + " not fully implemented");
+						// if (!M22.AudioMaster.LoadSting(_lineC.m_parameters_txt[0]))
+						// {
+						// 	UnityWrapper.LogError("Failed to load sting! - " + _lineC.m_parameters_txt[0]);
+						// };
+				}
+				break;
+			case this.LINETYPES.STOP_SFX_LOOPED:
+				if (_splitStr.length > 1)
+				{
+					_lineC.m_parameters.push(_splitStr[1]);
+
+					// if(AudioMaster.IsAudioLoaded(_splitStr[1]) == false)
+					// {
+					// 	UnityWrapper.LogWarningFormat("Stopping a looped SFX that isn't played/loaded yet at line {0}; this shouldn't happen!", _lineC.m_origScriptPos);
+					// }
+
+					if(_splitStr.length > 2)
+					{
+						_lineC.m_parameters.push(_splitStr[2]);
+					}
+					else
+					{
+						_lineC.m_parameters.push("1.0");
+					}
+				}
+				break;
+			case this.LINETYPES.MAKE_DECISION:
+				if (_splitStr.length > 1)
+				{
+					let reconstructed = "";
+					for (let i = 0; i < _splitStr.length; i++)
+					{
+						reconstructed += _splitStr[i] + " ";
+					}
+					let splitByQuote = reconstructed.split('\"');
+
+					// Should be 5 or 7
+					if(splitByQuote.length !== 5 && splitByQuote.length !== 7)
+					{
+						console.error("MakeDecision error; mismatched number of quotemarks!");
+					}
+
+					for (let i = 1; i < splitByQuote.length; i++)
+					{
+						splitByQuote[i] = splitByQuote[i].trim();
+						_lineC.m_parameters.push(splitByQuote[i]);
+					}
+
+					// up to 6 parameters
+					// flags do not use "" but the text string does
+					// i.e. MakeDecision "Choice 1" choice_1 "Choice 2" choice_2 "Choice 3" choice_3
+					// if(num of quotemarks != 6) mismatch error
+					//
+					// This means splitStr is useless cus of spaces, and will need to be re-split in terms of " marks
+					// i.e. splitStr[0] == "MakeDecision ";
+					// splitStr[1] == "Choice 1";
+					// splitStr[2] == " choice_1 ";
+				}
+				break;
+		}
+
+		return _lineC;
 	}
 
 	constructor() {
@@ -299,4 +750,4 @@ class ScriptCompiler {
 
 }
 
-module.exports = global.M22.ScriptCompiler = new ScriptCompiler();
+module.exports = global.M22.ScriptCompiler = ScriptCompiler;

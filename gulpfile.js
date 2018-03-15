@@ -13,9 +13,15 @@ gulp.task('build', function () {
 			if(fs.lstatSync('./build/' + files[k]).isDirectory() === true) continue;
 			fs.unlinkSync('./build/' + files[k]);
 		}
+
 		files = fs.readdirSync('./build/scripts');
 		for(let k in files){
-			fs.unlinkSync('./build/scripts' + files[k]);
+			fs.unlinkSync('./build/scripts/' + files[k]);
+		}
+
+		files = fs.readdirSync('./src/scripts');
+		for(let k in files){
+			fs.createReadStream("./src/scripts/" + files[k]).pipe(fs.createWriteStream("./build/scripts/" + files[k]));
 		}
 	}
 
