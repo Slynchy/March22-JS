@@ -15,6 +15,8 @@ class line_c {
 
 		this.m_origScriptPos = 0; // used to tell where it is in the original script
 
+		this.m_requiredAssets = [];
+
 		if (props) {
 			Object.assign(this, props);
 		}

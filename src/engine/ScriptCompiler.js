@@ -192,12 +192,12 @@ class ScriptCompiler {
 		return output;
 	}
 
-	static CompileScript(filename, callback){
+	static CompileScript(filename, callback, onFail){
 		let start = Date.now();
 
 		let result = new M22Script();
 
-		MiscFunctions.LoadTextFileAsString('./scripts/CHARACTER_NAMES.txt', (charNames)=> {
+		return MiscFunctions.LoadTextFileAsString('./scripts/CHARACTER_NAMES.txt', (charNames)=> {
 
 			charNames = this._processCharNamesFile(charNames);
 
@@ -208,7 +208,7 @@ class ScriptCompiler {
 				MiscFunctions.LoadTextFileAsString('./scripts/' + filename + '.txt', (scriptFile) => {
 
 					if (scriptFile.length === 0) {
-						callback(result);
+						onFail({reason: 'Script file length is zero!'});
 						return;
 					}
 
@@ -239,9 +239,9 @@ class ScriptCompiler {
 					console.log("Script compile took %ims", Date.now() - start);
 
 					callback(result);
-				});
-			});
-		});
+				}, onFail);
+			}, onFail);
+		}, onFail);
 	}
 
 	static CompileLine(_funcStr, _scriptPos, _chkpnt) {
@@ -360,12 +360,7 @@ class ScriptCompiler {
 					else
 						_lineC.m_parameters.push(false);
 
-					// TODO: implement character loading?
-					console.warn("" + _lineC.m_lineType + " not fully implemented");
-						// if (!M22.VNHandler.LoadCharacter(_lineC.m_parameters_txt[0], _lineC.m_parameters_txt[1]))
-						// {
-						// 	UnityWrapper.LogErrorFormat("Failed to load character \"{0}\" at line {1}!", (_lineC.m_parameters_txt[0] + " - " + _lineC.m_parameters_txt[1]), _lineC.m_origScriptPos);
-						// };
+					_lineC.m_requiredAssets.push(_lineC.m_parameters[0] + "/" +  _lineC.m_parameters[1]);
 				}
 				break;
 			case this.LINETYPES.WAIT:
@@ -384,34 +379,14 @@ class ScriptCompiler {
 				else
 					_lineC.m_parameters.push(false);
 				break;
+			case this.LINETYPES.PLAY_MUSIC:
 			case this.LINETYPES.PLAY_STING:
 				if (_splitStr.length > 1)
 				{
 					_lineC.m_parameters = [];
 					_splitStr[1] = _splitStr[1].trim();
 					_lineC.m_parameters.push(_splitStr[1]);
-
-					// TODO: implement audio loading?
-					console.warn("" + _lineC.m_lineType + " not fully implemented");
-						// if (!M22.AudioMaster.LoadSting(_lineC.m_parameters_txt[0]))
-						// {
-						// 	UnityWrapper.LogError("Failed to load sting! - " + _lineC.m_parameters_txt[0]);
-						// };
-				}
-				break;
-			case this.LINETYPES.PLAY_MUSIC:
-				if (_splitStr.length > 1)
-				{
-					_lineC.m_parameters = [];
-					_splitStr[1] = _splitStr[1].trim();
-					_lineC.m_parameters.push(_splitStr[1]);
-
-					// TODO: implement music loading?
-					console.warn("" + _lineC.m_lineType + " not fully implemented");
-						// if (!M22.AudioMaster.LoadMusic(_lineC.m_parameters_txt[0]))
-						// {
-						// 	UnityWrapper.LogErrorFormat("Failed to load music file \"{0}\" at line {1}!", _lineC.m_parameters_txt[0], _lineC.m_origScriptPos);
-						// };
+					_lineC.m_requiredAssets.push(_lineC.m_parameters[0]);
 				}
 				break;
 			case this.LINETYPES.EXECUTE_FUNCTION:
@@ -447,21 +422,18 @@ class ScriptCompiler {
 				// otherwise, just continue
 				break;
 			case this.LINETYPES.TRANSITION:
-				if (_splitStr.length > 1)
+				if (_splitStr.length > 3)
 				{
 					_lineC.m_parameters = [];
 					for (let i = 1; i < _splitStr.length; i++)
 					{
 						_lineC.m_parameters.push(_splitStr[i]);
 					}
-
-					// TODO: Implement background loading?
-					console.warn("" + _lineC.m_lineType + " not fully implemented");
-						// if (!M22.BackgroundMaster.LoadBackground(_lineC.m_parameters_txt[0]))
-						// {
-						// 	UnityWrapper.LogErrorFormat("Failed to load background - \"{0}\"", _lineC.m_parameters_txt[0]);
-						// 	// failed to load bg!
-						// };
+					_lineC.m_requiredAssets.push(_lineC.m_parameters[0]);
+					_lineC.m_requiredAssets.push(_lineC.m_parameters[1]);
+				} else {
+					console.error("Not enough parameters for TRANSITION @ Line %s", _lineC.m_origScriptPos.toString());
+					_lineC.m_lineType = this.LINETYPES.NULL_OPERATOR;
 				}
 				break;
 			case this.LINETYPES.DRAW_BACKGROUND:
@@ -492,15 +464,10 @@ class ScriptCompiler {
 					else
 						_lineC.m_parameters.push(false);
 
-					// TODO: Implement background loading?
-					console.warn("" + _lineC.m_lineType + " not fully implemented");
-						// if (!M22.BackgroundMaster.LoadBackground(_lineC.m_parameters_txt[0]))
-						// {
-						// 	UnityWrapper.LogErrorFormat("Failed to load background \"{0}\" at line {1}", _lineC.m_parameters_txt[0], _lineC.m_origScriptPos);
-						// };
+					_lineC.m_requiredAssets.push(_lineC.m_parameters[0]);
 				}
 				else
-					console.error("Not enough parameters on DrawBackground at line %i", _lineC.m_origScriptPos);
+					console.error("Not enough parameters on DRAW_BACKGROUND at line %i", _lineC.m_origScriptPos);
 				break;
 			case this.LINETYPES.ENABLE_NOVEL_MODE:
 				break;
@@ -511,13 +478,7 @@ class ScriptCompiler {
 				{
 					_lineC.m_parameters = [];
 					_lineC.m_parameters.push(_splitStr[1]);
-
-					// TODO: Implement video file loading?
-					console.warn("" + _lineC.m_lineType + " not fully implemented");
-						// if(M22.ScriptMaster.LoadVideoFile(_splitStr[1]) == false)
-						// {
-						// 	UnityWrapper.LogError("Failed to load video file: " + _splitStr[1]);
-						// }
+					_lineC.m_requiredAssets.push(_lineC.m_parameters[0]);
 				}
 				break;
 			case this.LINETYPES.CLEAR_CHARACTER:
@@ -604,12 +565,7 @@ class ScriptCompiler {
 						_lineC.m_parameters.push("1.0");
 					}
 
-					// TODO: Implement audio file loading?
-					console.warn("" + _lineC.m_lineType + " not fully implemented");
-						// if (!M22.AudioMaster.LoadSting(_lineC.m_parameters_txt[0]))
-						// {
-						// 	UnityWrapper.LogError("Failed to load sting! - " + _lineC.m_parameters_txt[0]);
-						// };
+					_lineC.m_requiredAssets.push(_lineC.m_parameters[0]);
 				}
 				break;
 			case this.LINETYPES.STOP_SFX_LOOPED:

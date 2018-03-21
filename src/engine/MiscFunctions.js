@@ -13,13 +13,18 @@ if (!String.prototype.hashCode) {
 
 class MiscFunction{
 
-	static LoadTextFileAsString(filename, callback){
+	static LoadTextFileAsString(filename, callback, onFail){
 		if(!callback) throw new Error("no callback");
+		if(!onFail) onFail = ()=>{};
 
 		let client = new XMLHttpRequest();
 		client.open('GET', filename);
 		client.onload = function() {
 			callback(client.responseText);
+		};
+		client.onerror = function(err){
+			console.error(err);
+			onFail({reason: 'Failed to get file: ' + filename})
 		};
 		client.send();
 	}

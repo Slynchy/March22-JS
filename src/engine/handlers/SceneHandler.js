@@ -1,17 +1,49 @@
 const PIXI = require('pixi.js');
+const TextBox = require('../objects/TextBox.js');
 
 class SceneHandler {
 
 	constructor(){
 		this._application = new PIXI.Application(Settings.applicationSettings);
 
+		this._textBox = new TextBox();
+		this.scene.addChild(this._textBox);
 
+		this._backgrounds = [];
 
-		this._scene = new PIXI.Container();
+		this._characters = [];
 	}
 
 	get scene(){
-		return this._scene;
+		return this._application.stage;
+	}
+
+	get textBox(){
+		return this._textBox;
+	}
+
+	get backgrounds(){
+		return this._backgrounds;
+	}
+
+	get characters(){
+		return this._characters;
+	}
+
+	AddCharacter(char){
+		throw new Error("Not yet implemented");
+	}
+
+	RemoveCharacter(char){
+		throw new Error("Not yet implemented");
+	}
+
+	AddBackground(bg){
+		throw new Error("Not yet implemented");
+	}
+
+	RemoveBackground(bg){
+		throw new Error("Not yet implemented");
 	}
 
 	get domElement(){
