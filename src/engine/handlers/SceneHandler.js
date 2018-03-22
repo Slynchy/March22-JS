@@ -18,6 +18,10 @@ class SceneHandler {
 		return this._application.stage;
 	}
 
+	get renderer(){
+		return this._application.renderer;
+	}
+
 	get textBox(){
 		return this._textBox;
 	}

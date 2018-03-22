@@ -5,6 +5,8 @@ const CharacterHandler = require('./handlers/CharacterHandler.js');
 const InputHandler = require('./handlers/InputHandler.js');
 const CustomFunctionHandler = require('./handlers/CustomFunctionHandler.js');
 const SceneHandler = require('./handlers/SceneHandler.js');
+const AssetHandler = require('./handlers/AssetHandler.js');
+const ScriptHandler = require('./handlers/ScriptHandler.js');
 
 /**
  * Singleton master class for all M22 functionality
@@ -19,12 +21,28 @@ class March22 {
 		this.InputHandler = new InputHandler();
 		this.CustomFunctionHandler = new CustomFunctionHandler();
 		this.SceneHandler = new SceneHandler();
+		this.AssetHandler = new AssetHandler();
+		this.ScriptHandler = new ScriptHandler();
 
 		this._activeScript = null;
+
+		this._domElement = null;
+
+		window.addEventListener("resize", ()=>{
+			this.SceneHandler.renderer.resize( Settings.applicationSettings.width, Settings.applicationSettings.height );
+		});
+	}
+
+	addViewToDocument(){
+		this._domElement = document.body.appendChild(M22.domElement);
 	}
 
 	get domElement(){
-		return this.SceneHandler.domElement;
+		if(!this._domElement)
+			return this.SceneHandler.domElement;
+		else {
+			return this._domElement;
+		}
 	}
 
 	_loadScriptToActive(scriptName, onSuccess, onFail){
@@ -45,14 +63,25 @@ class March22 {
 			entrypoint = 'START_SCRIPT';
 		}
 
-		this._loadScriptToActive(entrypoint, ()=>{
-			this._loadAssetsForScript(this._activeScript, ()=>{
-				// assets are loaded, start script
-				console.log(this._activeScript);
-			});
-		}, (err)=>{
-			throw new Error(err.reason);
-		});
+		this._loadScriptToActive(
+			entrypoint,
+			()=>{
+				this._loadAssetsForScript(
+					this._activeScript,
+					()=>{
+						// assets are loaded, start script
+						console.log(this._activeScript);
+					},
+					(err)=>{
+						throw new Error(err.reason);
+					}
+				);
+
+			},
+			(err)=>{
+				throw new Error(err.reason);
+			}
+		);
 
 	}
 
@@ -67,7 +96,7 @@ class March22 {
 		// unload existing assets to clear memory
 		// load new assets
 		// run callback
-		onSuccess();
+		this.AssetHandler.loadAssetsFromScript(scriptObj, onSuccess, onFail);
 	};
 }
 
