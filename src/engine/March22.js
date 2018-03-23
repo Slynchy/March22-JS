@@ -10,6 +10,9 @@ const ScriptHandler = require('./handlers/ScriptHandler.js');
 
 /**
  * Singleton master class for all M22 functionality
+ *
+ * From all handlers, we assume global.M22 === the singleton instance, because
+ * the handler shouldn't exist without the primary engine being created.
  */
 class March22 {
 	constructor(){

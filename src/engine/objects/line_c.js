@@ -17,9 +17,15 @@ class line_c {
 
 		this.m_requiredAssets = [];
 
+		this.exec = ()=>{};
+
 		if (props) {
 			Object.assign(this, props);
 		}
+	}
+
+	setFunction(func){
+		this.exec = func.bind(this);
 	}
 }
 

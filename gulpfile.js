@@ -1,31 +1,33 @@
 let gulp = require('gulp');
 let browserify = require('browserify');
 let fs = require('fs');
+let rimraf = require('rimraf');
+let copyDir = require('copy-dir');
+let LineTypes = require('./src/engine/LineTypes.js');
+
+function ClearBuildFolder(){
+	console.log("Clearing build folder...");
+	rimraf.sync('./build');
+}
+
+function CreateBuildFolder(){
+	console.log("Making build folder...");
+	fs.mkdirSync('./build');
+	fs.mkdirSync('./build/scripts');
+	fs.mkdirSync('./build/assets');
+	fs.mkdirSync('./build/assets/audio');
+	fs.mkdirSync('./build/assets/backgrounds');
+	fs.mkdirSync('./build/assets/characters');
+	fs.mkdirSync('./build/assets/video');
+}
 
 gulp.task('build', function () {
 
 	if(!fs.existsSync('./build')){
-		console.log("Making build folder...");
-		fs.mkdirSync('./build');
-		fs.mkdirSync('./build/scripts');
+		CreateBuildFolder();
 	} else {
-		console.log("Clearing build folder...");
-		let files = fs.readdirSync('./build');
-		for(let k in files){
-			if(fs.lstatSync('./build/' + files[k]).isDirectory() === true) continue;
-			fs.unlinkSync('./build/' + files[k]);
-		}
-
-		files = fs.readdirSync('./build/scripts');
-		for(let k in files){
-			fs.unlinkSync('./build/scripts/' + files[k]);
-		}
-
-		console.log("Copying scripts to build...");
-		files = fs.readdirSync('./src/scripts');
-		for(let k in files){
-			fs.createReadStream("./src/scripts/" + files[k]).pipe(fs.createWriteStream("./build/scripts/" + files[k]));
-		}
+		ClearBuildFolder();
+		CreateBuildFolder();
 	}
 
 	console.log("Copying index.html to build...");
@@ -34,16 +36,38 @@ gulp.task('build', function () {
 	console.log("Copying style.css to build...");
 	fs.createReadStream("./src/style.css").pipe(fs.createWriteStream("./build/style.css"));
 
-	//for(let k in fs.readdirSync('./src/scripts')){
+	console.log("Copying scripts to build...");
+	let scripts = fs.readdirSync('./src/scripts');
+	for(let k in scripts){
+		fs.createReadStream("./src/scripts/" + scripts[k]).pipe(fs.createWriteStream("./build/scripts/" + scripts[k]));
+	}
 
-	//}
+	console.log("Copying assets to build...");
+	copyDir.sync('./src/assets', './build/assets');
 
 	try
 	{
 		console.log("Building bundle with Browserify...");
 		let result = fs.createWriteStream('./build/main.min.js');
 		let b = browserify();
+
+		// Entrypoint
 		b.add('./src/main.js');
+
+		for(let k in LineTypes){
+			if(
+				LineTypes[k] !== LineTypes.COMMENT &&
+				LineTypes[k] !== LineTypes.NUM_OF_LINETYPES &&
+				LineTypes[k] !== LineTypes.NULL_OPERATOR &&
+				LineTypes[k] !== LineTypes.CHECKPOINT &&
+				LineTypes[k] !== LineTypes.NARRATIVE &&
+				LineTypes[k] !== LineTypes.DIALOGUE &&
+				LineTypes[k] !== LineTypes.NUM_OF_LINETYPES
+			){
+				b.require('./src/engine/functions/' + LineTypes[k], {expose: '__' + LineTypes[k]});
+			}
+		}
+
 		return b.bundle()
 			.on('end', ()=>{
 				console.log("Done!");
@@ -52,7 +76,8 @@ gulp.task('build', function () {
 	}
 	catch(err)
 	{
-		console.log(err.stack);
+		console.error(err);
+		console.error(err.stack);
 	}
 
 
