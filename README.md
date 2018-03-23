@@ -1,0 +1,1 @@
+The JavaScript port of the March22 engine (using March22-Unity codebase as reference). Intended to be the definitive March22 implementation, is still very WIP and not yet at prototype stage (i.e. UNUSABLE).
