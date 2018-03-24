@@ -2,24 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2ee76e5e-6708-4d68-8f4a-036fafe08204" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/gulpfile.js" afterPath="$PROJECT_DIR$/gulpfile.js" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" afterPath="$PROJECT_DIR$/package-lock.json" />
-      <change beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change beforePath="$PROJECT_DIR$/src/Settings.js" afterPath="$PROJECT_DIR$/src/Settings.js" />
       <change beforePath="$PROJECT_DIR$/src/engine/March22.js" afterPath="$PROJECT_DIR$/src/engine/March22.js" />
       <change beforePath="$PROJECT_DIR$/src/engine/ScriptCompiler.js" afterPath="$PROJECT_DIR$/src/engine/ScriptCompiler.js" />
-      <change beforePath="$PROJECT_DIR$/src/engine/functions/ClearCharacter.js" afterPath="$PROJECT_DIR$/src/engine/functions/ClearCharacter.js" />
-      <change beforePath="$PROJECT_DIR$/src/engine/functions/ClearCharacters.js" afterPath="$PROJECT_DIR$/src/engine/functions/ClearCharacters.js" />
-      <change beforePath="$PROJECT_DIR$/src/engine/functions/DisableNovelMode.js" afterPath="$PROJECT_DIR$/src/engine/functions/DisableNovelMode.js" />
-      <change beforePath="$PROJECT_DIR$/src/engine/functions/DrawBackground.js" afterPath="$PROJECT_DIR$/src/engine/functions/DrawBackground.js" />
-      <change beforePath="$PROJECT_DIR$/src/engine/functions/DrawCharacter.js" afterPath="$PROJECT_DIR$/src/engine/functions/DrawCharacter.js" />
-      <change beforePath="$PROJECT_DIR$/src/engine/functions/EnableNovelMode.js" afterPath="$PROJECT_DIR$/src/engine/functions/EnableNovelMode.js" />
-      <change beforePath="$PROJECT_DIR$/src/engine/functions/ExecuteFunction.js" afterPath="$PROJECT_DIR$/src/engine/functions/ExecuteFunction.js" />
-      <change beforePath="$PROJECT_DIR$/src/engine/functions/Goto.js" afterPath="$PROJECT_DIR$/src/engine/functions/Goto.js" />
-      <change beforePath="$PROJECT_DIR$/src/engine/functions/HideWindow.js" afterPath="$PROJECT_DIR$/src/engine/functions/HideWindow.js" />
-      <change beforePath="$PROJECT_DIR$/src/engine/functions/LoadScript.js" afterPath="$PROJECT_DIR$/src/engine/functions/LoadScript.js" />
-      <change beforePath="$PROJECT_DIR$/src/engine/functions/PlayMusic.js" afterPath="$PROJECT_DIR$/src/engine/functions/PlayMusic.js" />
       <change beforePath="$PROJECT_DIR$/src/engine/functions/ShowWindow.js" afterPath="$PROJECT_DIR$/src/engine/functions/ShowWindow.js" />
       <change beforePath="$PROJECT_DIR$/src/engine/handlers/AssetHandler.js" afterPath="$PROJECT_DIR$/src/engine/handlers/AssetHandler.js" />
       <change beforePath="$PROJECT_DIR$/src/engine/handlers/SceneHandler.js" afterPath="$PROJECT_DIR$/src/engine/handlers/SceneHandler.js" />
@@ -64,11 +48,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PlayMusic.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="PlayMusic.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/engine/functions/PlayMusic.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="85">
               <caret line="5" column="27" lean-forward="true" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Settings.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/Settings.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="15" column="10" lean-forward="false" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -204,7 +198,6 @@
         <option value="$PROJECT_DIR$/src/engine/handlers/AssetHandler.js" />
         <option value="$PROJECT_DIR$/src/engine/March22.js" />
         <option value="$PROJECT_DIR$/src/engine/objects/Background.js" />
-        <option value="$PROJECT_DIR$/src/Settings.js" />
         <option value="$PROJECT_DIR$/src/engine/handlers/SceneHandler.js" />
         <option value="$PROJECT_DIR$/src/engine/objects/Character.js" />
         <option value="$PROJECT_DIR$/src/engine/objects/M22Script.js" />
@@ -212,6 +205,7 @@
         <option value="$PROJECT_DIR$/src/engine/functions/ShowWindow.js" />
         <option value="$PROJECT_DIR$/src/engine/objects/TextBox.js" />
         <option value="$PROJECT_DIR$/src/engine/functions/PlayMusic.js" />
+        <option value="$PROJECT_DIR$/src/Settings.js" />
       </list>
     </option>
   </component>
@@ -384,12 +378,12 @@
       <workItem from="1521188820293" duration="8056000" />
       <workItem from="1521450554957" duration="42000" />
       <workItem from="1521633402112" duration="41043000" />
-      <workItem from="1521926312828" duration="5743000" />
+      <workItem from="1521926312828" duration="5845000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="98811000" />
+    <option name="totallyTimeSpent" value="98913000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -753,14 +747,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Settings.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="24" lean-forward="false" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/engine/objects/Background.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
@@ -837,6 +823,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="5" column="27" lean-forward="true" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Settings.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="15" column="10" lean-forward="false" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
           <folding />
         </state>
       </provider>
