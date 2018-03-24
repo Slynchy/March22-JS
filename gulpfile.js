@@ -7,12 +7,13 @@ let LineTypes = require('./src/engine/LineTypes.js');
 
 function ClearBuildFolder(){
 	console.log("Clearing build folder...");
-	rimraf.sync('./build');
+	rimraf.sync('./build/*');
 }
 
-function CreateBuildFolder(){
+function CreateBuildFolder(makeBuild){
 	console.log("Making build folder...");
-	fs.mkdirSync('./build');
+	if(makeBuild)
+		fs.mkdirSync('./build');
 	fs.mkdirSync('./build/scripts');
 	fs.mkdirSync('./build/assets');
 	fs.mkdirSync('./build/assets/audio');
@@ -24,10 +25,10 @@ function CreateBuildFolder(){
 gulp.task('build', function () {
 
 	if(!fs.existsSync('./build')){
-		CreateBuildFolder();
+		CreateBuildFolder(true);
 	} else {
 		ClearBuildFolder();
-		CreateBuildFolder();
+		CreateBuildFolder(false);
 	}
 
 	console.log("Copying index.html to build...");
