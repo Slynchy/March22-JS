@@ -17,6 +17,8 @@ class line_c {
 
 		this.m_requiredAssets = [];
 
+		this.m_skipToNextLine = false;
+
 		this.exec = ()=>{};
 
 		if (props) {
@@ -25,7 +27,11 @@ class line_c {
 	}
 
 	setFunction(func){
-		this.exec = func.bind(this);
+		this.exec = ()=>{
+			func.bind(this)();
+			if(this.m_skipToNextLine)
+				M22.ScriptHandler.NextLine();
+        }
 	}
 }
 

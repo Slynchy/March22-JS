@@ -7,6 +7,22 @@ class TextBox extends Sprite{
 		if(props)
 			Object.assign(this,props);
 	}
+
+	hide(){
+		console.log('Hide');
+	}
+
+    show(){
+        console.log('Show');
+    }
+
+	disableNovelMode(){
+		console.log('disableNovelMode');
+	}
+
+    enableNovelMode(){
+        console.log('enableNovelMode');
+    }
 }
 
 module.exports = TextBox;

@@ -7,6 +7,10 @@ class Character extends Sprite {
 		if(props)
 			Object.assign(this,props);
 	}
+
+    update(){
+
+    }
 }
 
 module.exports = Character;

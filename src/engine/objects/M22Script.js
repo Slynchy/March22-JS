@@ -8,6 +8,8 @@ class M22Script {
 		this._variables = [];
 		this._charNames = [];
 
+		this._assets = {};
+
 		this._requiredAssets = {
 			characters: [],
 			backgrounds: [],
@@ -16,6 +18,10 @@ class M22Script {
 		};
 		this._assetsSorted = false;
 	};
+
+	get length(){
+		return this._lines.length;
+	}
 
 	AddLine(line){
 		this._lines.push(line);
@@ -69,6 +75,18 @@ class M22Script {
 		}
 		return this._requiredAssets;
 	}
+
+	addAssets(assets){
+		this._assets = Object.assign(this._assets, assets);
+	}
+
+	getBackground(name){
+		return this._assets.backgrounds[name].texture;
+	}
+
+    getCharacter(name, emotion){
+        return this._assets.characters[name+'/'+emotion].texture;
+    }
 
 	get checkpoints(){
 		return this._checkpoints;

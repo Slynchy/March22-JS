@@ -27,8 +27,6 @@ class March22 {
 		this.AssetHandler = new AssetHandler();
 		this.ScriptHandler = new ScriptHandler();
 
-		this._activeScript = null;
-
 		this._domElement = null;
 
 		window.addEventListener("resize", ()=>{
@@ -50,7 +48,7 @@ class March22 {
 
 	_loadScriptToActive(scriptName, onSuccess, onFail){
 		return this.ScriptCompiler.CompileScript(scriptName, (data)=>{
-			this._activeScript = data;
+			this.ScriptHandler.LoadScript(data);
 
 			if(onSuccess)
 				onSuccess();
@@ -70,10 +68,13 @@ class March22 {
 			entrypoint,
 			()=>{
 				this._loadAssetsForScript(
-					this._activeScript,
-					()=>{
+                    this.ScriptHandler.activeScript,
+					(assets)=>{
 						// assets are loaded, start script
-						console.log(this._activeScript);
+                        this.ScriptHandler.activeScript.addAssets(assets);
+						console.log(this.ScriptHandler.activeScript);
+						this.ScriptHandler.NextLine();
+						this.SceneHandler.startLoop();
 					},
 					(err)=>{
 						throw new Error(err.reason);

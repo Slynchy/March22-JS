@@ -1,10 +1,12 @@
 const PIXI = require('pixi.js');
 const TextBox = require('../objects/TextBox.js');
+const Background = require('../objects/Background.js');
 
 class SceneHandler {
 
 	constructor(){
 		this._application = new PIXI.Application(Settings.applicationSettings);
+        this._application.ticker.minFPS = 60;
 
 		this._textBox = new TextBox();
 		this.scene.addChild(this._textBox);
@@ -12,6 +14,27 @@ class SceneHandler {
 		this._backgrounds = [];
 
 		this._characters = [];
+
+		this._loopInterval = null;
+
+		if(Settings.debugMode){
+			console.log("Debug mode");
+		}
+	}
+
+	startLoop(){
+        this._application.ticker.add(this.mainLoop.bind(this));
+	}
+
+	mainLoop(){
+		// DO NOTHING
+		for(let i = 0; i < this._backgrounds.length; i++){
+			this._backgrounds[i].update();
+		}
+
+        for(let i = 0; i < this._characters.length; i++){
+            this._characters[i].update();
+        }
 	}
 
 	get scene(){
@@ -35,19 +58,26 @@ class SceneHandler {
 	}
 
 	AddCharacter(char){
-		throw new Error("Not yet implemented");
+        console.log('Drawing char ' + char);
 	}
 
 	RemoveCharacter(char){
-		throw new Error("Not yet implemented");
+        console.log('Removing char ' + char);
 	}
 
+    RemoveCharacters(){
+        console.log('Removing all chars');
+    }
+
 	AddBackground(bg){
-		throw new Error("Not yet implemented");
+        console.log('Drawing BG ' + bg);
+        let bgObj = new Background(M22.ScriptHandler.activeScript.getBackground(bg), {});
+        this._backgrounds.push(bgObj);
+        this.scene.addChild(bgObj);
 	}
 
 	RemoveBackground(bg){
-		throw new Error("Not yet implemented");
+        console.log('Remove BG ' + bg);
 	}
 
 	get domElement(){

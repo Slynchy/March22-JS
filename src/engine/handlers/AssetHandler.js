@@ -87,8 +87,7 @@ class AssetHandler {
 							break;
 					}
 				}
-				console.log(result);
-				onSuccess();
+				onSuccess(result);
 			});
 		}
 		catch(err) {

@@ -202,7 +202,11 @@ class ScriptCompiler {
 
 						currentLine = this.CompileLine(currentLine, i, checkpoints);
 
-						if (currentLine.m_lineType !== this.LINETYPES.NULL_OPERATOR) {
+						if (
+							currentLine.m_lineType !== this.LINETYPES.NULL_OPERATOR &&
+                            currentLine.m_lineType !== this.LINETYPES.COMMENT &&
+                            currentLine.m_lineType !== this.LINETYPES.CHECKPOINT
+						) {
 							currentLine.m_ID = ++lineCounter;
 							result.AddLine(currentLine);
 						}
@@ -296,7 +300,7 @@ class ScriptCompiler {
 				if (_splitStr.length > 1)
 				{
 					_lineC.m_parameters = [];
-					_lineC.m_parameters.push(_splitStr[1]);
+					_lineC.m_parameters.push(parseFloat(_splitStr[1]));
 				}
 				break;
 			case this.LINETYPES.SET_ACTIVE_TRANSITION:
@@ -473,11 +477,16 @@ class ScriptCompiler {
 				}
 				break;
 			case this.LINETYPES.LOAD_SCRIPT:
+                if (_splitStr.length > 1)
+                {
+                    _lineC.m_parameters.push(_splitStr[1]);
+                }
+                break;
 			case this.LINETYPES.HIDE_WINDOW:
 			case this.LINETYPES.SHOW_WINDOW:
 				if (_splitStr.length > 1)
 				{
-					_lineC.m_parameters.push(_splitStr[1]);
+					_lineC.m_parameters.push(parseFloat(_splitStr[1]));
 				}
 				break;
 			case this.LINETYPES.SET_FLAG:
