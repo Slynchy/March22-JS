@@ -35,8 +35,6 @@ class ScriptHandler {
 
 		this._currentLine = this._currentScript.GetLine(++this._currentLineIndex);
 
-		console.log(this._currentLine);
-
 		this.ExecuteFunction(this._currentLine);
 	}
 
@@ -52,10 +50,11 @@ class ScriptHandler {
      */
 	ExecuteFunction(line_c, isInline){
 		if(line_c.m_lineType === LineTypes.NARRATIVE){
-			// handle narrative
+			M22.SceneHandler.textBox.setText(line_c.m_lineContents);
 			return;
 		} else if(line_c.m_lineType === LineTypes.DIALOGUE){
-            // handle DIALOGUE
+            // TODO: handle DIALOGUE
+            M22.SceneHandler.textBox.setText(line_c.m_lineContents);
 			return;
 		}
 		line_c.exec();

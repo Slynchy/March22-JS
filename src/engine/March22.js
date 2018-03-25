@@ -74,6 +74,7 @@ class March22 {
                         this.ScriptHandler.activeScript.addAssets(assets);
 						console.log(this.ScriptHandler.activeScript);
 						this.ScriptHandler.NextLine();
+                        this.SceneHandler.textBox.setTextbox(this.ScriptHandler.activeScript.getTextbox('narrative').texture);
 						this.SceneHandler.startLoop();
 					},
 					(err)=>{

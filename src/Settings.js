@@ -15,13 +15,21 @@ class Settings {
 			renderScale: 1
 		};
 
+		this.debugMode = true;
+
+		this.gameMode = true;
+
 		this.AssetHandlerSettings = {
 
 			/**
 			 * If true, assetloader will replace unloadable textures/assets with empty ones, so the game still runs
 			 */
-			safeMode: false,
+			safeMode: true,
 			concurrency: 10,
+		}
+
+		this.textbox = {
+			yOffset: -15,
 		}
 	}
 }

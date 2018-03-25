@@ -19,6 +19,7 @@ function CreateBuildFolder(makeBuild){
 	fs.mkdirSync('./build/assets/audio');
 	fs.mkdirSync('./build/assets/backgrounds');
 	fs.mkdirSync('./build/assets/characters');
+    fs.mkdirSync('./build/assets/textbox');
 	fs.mkdirSync('./build/assets/video');
 }
 

@@ -28,16 +28,22 @@ class AssetHandler {
 
 	_loadedBg(res){
 		if(res.error){
-			console.error(res.error);
+			//console.error(res.error);
 		}
 		//console.log(M22.AssetHandler._loader.progress);
 	}
 
 	_loadedChar(res){
 		if(res.error){
-			console.error(res.error);
+			//console.error(res.error);
 		}
 		//console.log(M22.AssetHandler._loader.progress);
+	}
+
+	_loadedTextbox(res){
+		if(res.error){
+			//console.error(res.error);
+		}
 	}
 
 	loadAssetsFromScript(scriptObj, onSuccess, onFail){
@@ -47,7 +53,13 @@ class AssetHandler {
 			characters: {},
 			backgrounds: {},
 			videos: {},
-			sfx: {}
+			sfx: {},
+			textbox: {
+                textbox_comment: null,
+                textbox_dialogue: null,
+                textbox_narrative: null,
+                textbox_novel: null
+			}
 		};
 
 		this._loader.reset();
@@ -74,6 +86,28 @@ class AssetHandler {
 
 		// load video
 
+		// load textboxes
+		this._loader.add(
+			'textbox_comment',
+            'assets/textbox/comment.png',
+			this._loadedTextbox
+		);
+        this._loader.add(
+            'textbox_dialogue',
+            'assets/textbox/dialogue.png',
+            this._loadedTextbox
+        );
+        this._loader.add(
+            'textbox_narrative',
+            'assets/textbox/narrative.png',
+            this._loadedTextbox
+        );
+        this._loader.add(
+            'textbox_novel',
+            'assets/textbox/novel.png',
+            this._loadedTextbox
+        );
+
 		try {
 			this._loader.load((loader,resources)=>{
 				for(let k in resources){
@@ -85,6 +119,9 @@ class AssetHandler {
 						case 'characters':
 							result.characters[resources[k].name] = resources[k];
 							break;
+                        case 'textbox':
+                            result.textbox[resources[k].name] = resources[k];
+                            break;
 					}
 				}
 				onSuccess(result);

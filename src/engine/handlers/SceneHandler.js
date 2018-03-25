@@ -27,6 +27,13 @@ class SceneHandler {
 	}
 
 	mainLoop(){
+        this.scene.children.sort(function(a, b){
+            if(!a.zOrder) a.zOrder = 0;
+            if(!b.zOrder) b.zOrder = 0;
+            if(a.zOrder === b.zOrder) return 0;
+            else return (a.zOrder<b.zOrder ? -1 : 1);
+        });
+
 		// DO NOTHING
 		for(let i = 0; i < this._backgrounds.length; i++){
 			this._backgrounds[i].update();

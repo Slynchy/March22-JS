@@ -84,6 +84,13 @@ class M22Script {
 		return this._assets.backgrounds[name].texture;
 	}
 
+	getTextbox(type){
+		switch(type){
+			case 'narrative':
+				return this._assets.textbox.textbox_narrative;
+		}
+	}
+
     getCharacter(name, emotion){
         return this._assets.characters[name+'/'+emotion].texture;
     }
