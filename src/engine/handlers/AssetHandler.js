@@ -1,5 +1,8 @@
 let PIXI = require('pixi.js');
 
+/**
+ * Hook into _onAssetLoaded and do this.progress to get current load progress
+ */
 class AssetHandler {
 
 	constructor(){
@@ -16,6 +19,14 @@ class AssetHandler {
 
 		this._loader.onComplete.add(this._onSuccess);
 		this._loader.onError.add(this._onFail);
+
+		this._progress = 0;
+
+		this._transitions = Settings.transitions;
+	}
+
+	get progress(){
+		return (this._progress = (this._loader ? this._loader.progress : 0));
 	}
 
 	_onFail(){
@@ -26,11 +37,14 @@ class AssetHandler {
 
 	}
 
+	_onAssetLoaded(){};
+
 	_loadedBg(res){
 		if(res.error){
 			//console.error(res.error);
 		}
 		//console.log(M22.AssetHandler._loader.progress);
+		_onAssetLoaded();
 	}
 
 	_loadedChar(res){
@@ -38,12 +52,20 @@ class AssetHandler {
 			//console.error(res.error);
 		}
 		//console.log(M22.AssetHandler._loader.progress);
+		_onAssetLoaded();
+	}
+
+	_loadedTransition(res){
+		// we have to add them to the scene for the shader to work properly
+		M22.SceneHandler.AddTransition(res.name, res.texture);
+		_onAssetLoaded();
 	}
 
 	_loadedTextbox(res){
 		if(res.error){
 			//console.error(res.error);
 		}
+		_onAssetLoaded();
 	}
 
 	loadAssetsFromScript(scriptObj, onSuccess, onFail){
@@ -52,6 +74,7 @@ class AssetHandler {
 		let result = {
 			characters: {},
 			backgrounds: {},
+			transitions: {},
 			videos: {},
 			sfx: {},
 			textbox: {
@@ -108,13 +131,25 @@ class AssetHandler {
             this._loadedTextbox
         );
 
+        // Load transitions
+		for(let k in this._transitions) {
+			this._loader.add(
+				k,
+				'assets/backgrounds/transitions/' + this._transitions[k],
+				this._loadedTransition
+			);
+		}
+
 		try {
 			this._loader.load((loader,resources)=>{
 				for(let k in resources){
 					let split = resources[k].url.split('/');
 					switch(split[1]){
 						case 'backgrounds':
-							result.backgrounds[resources[k].name] = resources[k];
+							if(split[2] === 'transitions')
+								result.transitions[resources[k].name] = resources[k];
+							else
+								result.backgrounds[resources[k].name] = resources[k];
 							break;
 						case 'characters':
 							result.characters[resources[k].name] = resources[k];

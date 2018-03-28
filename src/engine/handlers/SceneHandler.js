@@ -12,8 +12,8 @@ class SceneHandler {
 		this.scene.addChild(this._textBox);
 
 		this._backgrounds = [];
-
 		this._characters = [];
+		this._transitions = {};
 
 		this._loopInterval = null;
 
@@ -64,6 +64,31 @@ class SceneHandler {
 		return this._characters;
 	}
 
+	AddTransition(key, texture){
+		let transitionSprite = new PIXI.Sprite(texture);
+		this._transitions[key] = transitionSprite;
+	}
+
+	GetTransition(key){
+		for(let k in this._transitions){
+			if(k === key) {
+				/*
+					Explanation: The shader relies on an in-scene sprite, but we can't set renderable=false in the
+					same frame it's added, so we only add it to the scene when it's needed (and the shader handles
+					making it unrenderable)
+				 */
+				return this._application.stage.addChild(this._transitions[k]);
+			}
+		}
+	}
+
+	RemoveTransitions(){
+		for(let k in this._transitions){
+			this._application.stage.removeChild(this._transitions[k]);
+		}
+		this._transitions = {};
+	}
+
 	AddCharacter(char){
         console.log('Drawing char ' + char);
 	}
@@ -81,6 +106,7 @@ class SceneHandler {
         let bgObj = new Background(M22.ScriptHandler.activeScript.getBackground(bg), {});
         this._backgrounds.push(bgObj);
         this.scene.addChild(bgObj);
+        return bgObj;
 	}
 
 	RemoveBackground(bg){

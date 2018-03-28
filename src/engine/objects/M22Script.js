@@ -13,8 +13,9 @@ class M22Script {
 		this._requiredAssets = {
 			characters: [],
 			backgrounds: [],
-			videos: [],
-			sfx: []
+			transitions: [],
+			sfx: [],
+			videos: []
 		};
 		this._assetsSorted = false;
 	};
@@ -35,8 +36,10 @@ class M22Script {
 
 			for(let a = 0; a < currLine.m_requiredAssets.length; a++){
 				switch(currLine.m_lineType){
-					case M22.ScriptCompiler.LINETYPES.DRAW_BACKGROUND:
 					case M22.ScriptCompiler.LINETYPES.TRANSITION:
+						this._requiredAssets.transitions.push(currLine.m_requiredAssets[a]);
+						break;
+					case M22.ScriptCompiler.LINETYPES.DRAW_BACKGROUND:
 						this._requiredAssets.backgrounds.push(currLine.m_requiredAssets[a]);
 						break;
 					case M22.ScriptCompiler.LINETYPES.PLAY_STING:
@@ -57,6 +60,9 @@ class M22Script {
 		// remove duplicates
 		this._requiredAssets.backgrounds = this._requiredAssets.backgrounds.filter((item, pos)=>{
 			return this._requiredAssets.backgrounds.indexOf(item) === pos;
+		});
+		this._requiredAssets.transitions = this._requiredAssets.transitions.filter((item, pos)=>{
+			return this._requiredAssets.transitions.indexOf(item) === pos;
 		});
 		this._requiredAssets.characters = this._requiredAssets.characters.filter((item, pos)=>{
 			return this._requiredAssets.characters.indexOf(item) === pos;
@@ -82,6 +88,10 @@ class M22Script {
 
 	getBackground(name){
 		return this._assets.backgrounds[name].texture;
+	}
+
+	getTransition(name){
+		return this._assets.transitions[name].texture;
 	}
 
 	getTextbox(type){

@@ -7,6 +7,75 @@
         <meta charset="utf-8">
         <title>Test</title>
         <link href="style.css" rel="stylesheet" type="text/css" />
+        <script id="transitionShaderIn" type="shader">
+
+            precision mediump float;
+
+            varying vec2 vFilterCoord;
+            varying vec2 vTextureCoord;
+
+            uniform vec2 scale;
+
+            uniform sampler2D uSampler;
+            uniform sampler2D mapSampler;
+
+            uniform vec4 filterArea;
+            uniform vec4 filterClamp;
+
+            uniform float _Progress;
+
+            void main(){
+                vec4 col = texture2D(uSampler, vTextureCoord);
+                vec4 destCol = texture2D(mapSampler, vFilterCoord);
+
+                float temp = clamp(1.0 - ((1.0 + (destCol.r * -1.0)) - _Progress), 0.0, 1.0);
+
+                gl_FragColor = col * temp;
+            }
+        </script>
+        <script id="transitionShaderOut" type="shader">
+
+            precision mediump float;
+
+            varying vec2 vFilterCoord;
+            varying vec2 vTextureCoord;
+
+            uniform vec2 scale;
+
+            uniform sampler2D uSampler;
+            uniform sampler2D mapSampler;
+
+            uniform vec4 filterArea;
+            uniform vec4 filterClamp;
+
+            uniform float _Progress;
+
+            void main(){
+                vec4 col = texture2D(uSampler, vTextureCoord);
+                vec4 destCol = texture2D(mapSampler, vFilterCoord);
+
+                float temp = clamp(1.0 - (destCol.r - _Progress), 0.0, 1.0);
+
+                gl_FragColor = col * temp;
+            }
+        </script>
+        <script id="vertexShader" type="shader">
+	        attribute vec2 aVertexPosition;
+            attribute vec2 aTextureCoord;
+
+            uniform mat3 projectionMatrix;
+            uniform mat3 filterMatrix;
+
+            varying vec2 vTextureCoord;
+            varying vec2 vFilterCoord;
+
+            void main(void)
+            {
+               gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+               vFilterCoord = ( filterMatrix * vec3( aTextureCoord, 1.0)  ).xy;
+               vTextureCoord = aTextureCoord;
+            }
+        </script>
     </head>
     <body>
 

@@ -26,11 +26,28 @@ class Settings {
 			 */
 			safeMode: true,
 			concurrency: 10,
-		}
+		};
 
 		this.textbox = {
 			yOffset: -15,
-		}
+		};
+
+		this.transitionUpdateRate = 16.6667;
+
+		this.transitions = {
+			'tr_eyes' : 'tr_eyes.png',
+			'tr-checkwipe' : 'tr-checkwipe.png',
+			'tr-checkwipe2' : 'tr-checkwipe2.png',
+			'tr-clockwipe' : 'tr-clockwipe.png',
+			'tr-delayblinds' : 'tr-delayblinds.png',
+			'tr-dots_col' : 'tr-dots_col.png',
+			'tr-flashback' : 'tr-flashback.png',
+			'tr-letter' : 'tr-letter.png',
+			'tr-openshock' : 'tr-openshock.png',
+			'tr-pronoise' : 'tr-pronoise.png',
+			'tr-softwipe' : 'tr-softwipe.png',
+			'tr-whipeh' : 'tr-wipeh.png'
+		};
 	}
 }
 
