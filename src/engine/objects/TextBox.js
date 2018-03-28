@@ -45,8 +45,6 @@ class TextBox extends Container{
 		if(this._activeAnim)
 			clearInterval(this._activeAnim);
 
-		console.log('finish line');
-
         this._text.text = this.currentText;
     }
 
