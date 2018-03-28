@@ -19,6 +19,9 @@ class ScriptHandler {
 	}
 
 	Goto(checkpointName){
+		if(!this._currentScript.checkpoints.hasOwnProperty(checkpointName))
+			throw new Error("Goto failed; checkpoint doesnt exist!");
+
 		this.GotoLine(this._currentScript.checkpoints[checkpointName]);
 	}
 
