@@ -1,5 +1,6 @@
 let gulp = require('gulp');
 let browserify = require('browserify');
+let babel = require('babelify');
 let fs = require('fs');
 let rimraf = require('rimraf');
 let copyDir = require('copy-dir');
@@ -23,7 +24,8 @@ function CreateBuildFolder(makeBuild){
 	fs.mkdirSync('./build/assets/video');
 }
 
-gulp.task('build', function () {
+function build(isProduction){
+	if(isProduction) console.log("Building for production!");
 
 	if(!fs.existsSync('./build')){
 		CreateBuildFolder(true);
@@ -49,9 +51,16 @@ gulp.task('build', function () {
 
 	try
 	{
-		console.log("Building bundle with Browserify...");
+		if(isProduction) console.log("Building bundle with Browserify + Babel + Uglifyify...");
+		else console.log("Building bundle with Browserify + Babel...");
+
 		let result = fs.createWriteStream('./build/main.min.js');
-		let b = browserify();
+		let b;
+		if(isProduction){
+			b = browserify().transform(babel, { global: true  }).transform('uglifyify', { global: true  });
+		} else {
+			b = browserify().transform(babel, { global: true  });
+		}
 
 		// Entrypoint
 		b.add('./src/main.js');
@@ -81,6 +90,11 @@ gulp.task('build', function () {
 		console.error(err);
 		console.error(err.stack);
 	}
+}
 
-
+gulp.task('build', ()=>{
+	return build(false);
+});
+gulp.task('build_prod', ()=>{
+	return build(true);
 });
