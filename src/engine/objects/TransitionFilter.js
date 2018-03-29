@@ -4,9 +4,9 @@ class TransitionFilter extends PIXI.Filter
 {
 	/**
 	 * @param {PIXI.Sprite} sprite
-	 * @param {bool} inOrOut
+	 * @param {bool} fadeIn
 	 */
-	constructor(sprite, inOrOut)
+	constructor(sprite, fadeIn)
 	{
 		const maskMatrix = new PIXI.Matrix();
 
@@ -16,7 +16,7 @@ class TransitionFilter extends PIXI.Filter
 			// vertex shader
 			document.getElementById("vertexShader").innerHTML,
 			// fragment shader
-			inOrOut ? document.getElementById("transitionShaderIn").innerHTML : document.getElementById("transitionShaderOut").innerHTML
+			fadeIn ? document.getElementById("transitionShaderIn").innerHTML : document.getElementById("transitionShaderOut").innerHTML
 		);
 
 		this.maskSprite = sprite;
@@ -27,7 +27,7 @@ class TransitionFilter extends PIXI.Filter
 		this.uniforms.filterMatrix = maskMatrix;
 		this.uniforms.scale = { x: 1, y: 1 };
 
-		this.inOrOut = (inOrOut == true);
+		this.fadeIn = (fadeIn == true);
 		this.uniforms._Progress = -1;
 
 		this.scale = new PIXI.Point(20, 20);

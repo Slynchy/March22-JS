@@ -8,6 +8,7 @@ class Settings {
 			autoStart: false,
 			backgroundColor: 0x000000,
 			scaleMode: 0, // 0 == linear, 1 == nearest
+			PRECISION_FRAGMENT: 'highp',
 
 			// unneeded
 			antialias: true,
@@ -47,7 +48,8 @@ class Settings {
 			'tr-openshock' : 'tr-openshock.png',
 			'tr-pronoise' : 'tr-pronoise.png',
 			'tr-softwipe' : 'tr-softwipe.png',
-			'tr-whipeh' : 'tr-wipeh.png'
+			'tr-whipeh' : 'tr-wipeh.png',
+			'tr-normal' : 'tr-normal.png'
 		};
 	}
 }

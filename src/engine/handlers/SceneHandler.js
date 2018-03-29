@@ -5,6 +5,7 @@ const Background = require('../objects/Background.js');
 class SceneHandler {
 
 	constructor(){
+		PIXI.settings.PRECISION_FRAGMENT = PIXI.PRECISION.HIGH;
 		this._application = new PIXI.Application(Settings.applicationSettings);
         this._application.ticker.minFPS = 60;
 
@@ -80,6 +81,13 @@ class SceneHandler {
 				return this._application.stage.addChild(this._transitions[k]);
 			}
 		}
+
+		if(Settings.AssetHandlerSettings.safeMode){
+			console.error("Failed to find transition \"%s\"; using \"%s\" instead", key, Object.keys(this._transitions)[0]);
+			return this._application.stage.addChild(this._transitions[Object.keys(this._transitions)[0]]);
+		} else {
+			throw new Error("Failed to find transition: ", key);
+		}
 	}
 
 	RemoveTransitions(){
@@ -100,6 +108,13 @@ class SceneHandler {
     RemoveCharacters(){
         console.log('Removing all chars');
     }
+
+	ClearOldBackgrounds(){
+		if(this._backgrounds.length === 0) return;
+		let bg = this._backgrounds[this._backgrounds.length-1];
+		this._backgrounds = [];
+		this._backgrounds.push(bg);
+	}
 
 	AddBackground(bg){
         console.log('Drawing BG ' + bg);

@@ -44,7 +44,7 @@ class AssetHandler {
 			//console.error(res.error);
 		}
 		//console.log(M22.AssetHandler._loader.progress);
-		_onAssetLoaded();
+		M22.AssetHandler._onAssetLoaded();
 	}
 
 	_loadedChar(res){
@@ -52,20 +52,20 @@ class AssetHandler {
 			//console.error(res.error);
 		}
 		//console.log(M22.AssetHandler._loader.progress);
-		_onAssetLoaded();
+		M22.AssetHandler._onAssetLoaded();
 	}
 
 	_loadedTransition(res){
 		// we have to add them to the scene for the shader to work properly
 		M22.SceneHandler.AddTransition(res.name, res.texture);
-		_onAssetLoaded();
+		M22.AssetHandler._onAssetLoaded();
 	}
 
 	_loadedTextbox(res){
 		if(res.error){
 			//console.error(res.error);
 		}
-		_onAssetLoaded();
+		M22.AssetHandler._onAssetLoaded();
 	}
 
 	loadAssetsFromScript(scriptObj, onSuccess, onFail){

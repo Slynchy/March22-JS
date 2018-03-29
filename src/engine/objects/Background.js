@@ -22,14 +22,17 @@ class Background extends PIXI.Sprite{
 			Object.assign(this,props);
 	}
 
-	setTransition(sprite, _inOrOut, callback){
+	setTransition(sprite, fadeIn, callback){
 		if(this.interval){
 			clearInterval(this.interval);
 			this.interval = null;
 		}
 
-		this.shader = new TransitionFilter(sprite, _inOrOut);
+		this.shader = new TransitionFilter(sprite, fadeIn);
 		this.filters = [this.shader];
+		if(Settings.applicationSettings.antialias){
+			this.filters.push(new PIXI.filters.FXAAFilter());
+		}
 		this.progress = -1;
 
 		this.interval = setInterval(()=>{
