@@ -11,6 +11,13 @@ if (!String.prototype.hashCode) {
 	};
 }
 
+if(!String.prototype.replaceAll){
+	String.prototype.replaceAll = function(search, replacement) {
+		let target = this;
+		return target.replace(new RegExp(search, 'g'), replacement);
+	};
+}
+
 class MiscFunction{
 
 	static LoadTextFileAsString(filename, callback, onFail){
@@ -32,6 +39,8 @@ class MiscFunction{
 	static IsNewLine(_s) {
 		return (_s === "\r\n" || _s === "\n" || _s === '');
 	}
+
+
 
 	static IsComment(_s) {
 		if (_s.length === 0) return true;

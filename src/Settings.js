@@ -30,6 +30,7 @@ class Settings {
 
 		this.textbox = {
 			yOffset: -15,
+			nameFontSize: 22,
 		};
 
 		this.transitionUpdateRate = 16.6667;

@@ -98,6 +98,8 @@ class M22Script {
 		switch(type){
 			case 'narrative':
 				return this._assets.textbox.textbox_narrative;
+			case 'dialogue':
+				return this._assets.textbox.textbox_dialogue;
 		}
 	}
 

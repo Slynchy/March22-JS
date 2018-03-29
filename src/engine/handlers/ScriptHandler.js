@@ -53,13 +53,18 @@ class ScriptHandler {
      */
 	ExecuteFunction(line_c, isInline){
 		if(line_c.m_lineType === LineTypes.NARRATIVE){
+			M22.SceneHandler.textBox.setTextbox(M22.ScriptHandler.activeScript.getTextbox('narrative').texture);
 			M22.SceneHandler.textBox.setText(line_c.m_lineContents);
+			M22.SceneHandler.textBox.clearSpeaker();
 			return;
 		} else if(line_c.m_lineType === LineTypes.DIALOGUE){
             // TODO: handle DIALOGUE
+			M22.SceneHandler.textBox.setTextbox(M22.ScriptHandler.activeScript.getTextbox('dialogue').texture);
             M22.SceneHandler.textBox.setText(line_c.m_lineContents);
+			M22.SceneHandler.textBox.setSpeaker(line_c.m_speaker);
 			return;
 		}
+
 		line_c.exec();
 	}
 }

@@ -72,21 +72,36 @@ class ScriptCompiler {
 
 			if(line.length < 2) continue;
 
+			let longName = line.match("\"([^\"]*)\"")[0];
+
 			let split = line.split(' ');
 
 			for(let k in split){
 				split[k] = split[k].trim();
 			}
 
+			let shortName = split[0];
+
+			longName = longName.replaceAll('"', '');
 
 			if(split.length < 5) continue;
 
-			this._charNames[split[0].hashCode()] = {
-				name: split[1],
+			this._charNames[shortName.hashCode()] = {
+				name: longName,
 				color: {
 					r: parseInt(split[2]),
 					g: parseInt(split[3]),
-					b: parseInt(split[4])
+					b: parseInt(split[4]),
+					get hexColor(){
+						let rHex = this.r.toString(16);
+						if(rHex.length === 1) rHex = '0' + rHex;
+						let gHex = this.g.toString(16);
+						if(gHex.length === 1) gHex = '0' + gHex;
+						let bHex = this.b.toString(16);
+						if(bHex.length === 1) bHex = '0' + bHex;
+
+						return '#' + rHex + gHex + bHex;
+					}
 				}
 			};
 		}
@@ -112,8 +127,8 @@ class ScriptCompiler {
 				} else if(_s[0] === '/' && _s[1] === '/'){
 					return this.FUNC_HASHES[this.LINETYPES.COMMENT.hashCode()];
 				} else {
-					if(this.CHAR_NAMES.hasOwnProperty(hash)){
-						return this.CHAR_NAMES[hash];
+					if(this.CHAR_NAMES().hasOwnProperty(hash)){
+						return this.FUNC_HASHES[this.LINETYPES.DIALOGUE.hashCode()];
 					} else {
 						return this.FUNC_HASHES[this.LINETYPES.NARRATIVE.hashCode()];
 					}
@@ -175,7 +190,7 @@ class ScriptCompiler {
 
 		return MiscFunctions.LoadTextFileAsString('./scripts/CHARACTER_NAMES.txt', (charNames)=> {
 
-			charNames = this._processCharNamesFile(charNames);
+			this._charNames = charNames = this._processCharNamesFile(charNames);
 
 			MiscFunctions.LoadTextFileAsString('./scripts/VARIABLES.txt', (variables) => {
 
@@ -247,13 +262,13 @@ class ScriptCompiler {
 		}
 		else if (tempLine_c.m_lineType === ScriptCompiler.LINETYPES.DIALOGUE) {
 			tempLine_c.m_lineContents = _funcStr;
-			tempLine_c.m_lineContents = tempLine_c.m_lineContents.substr(CURRENT_LINE_SPLIT[0].Length + 1);
+			tempLine_c.m_lineContents = tempLine_c.m_lineContents.substr(CURRENT_LINE_SPLIT[0].length + 1);
 
 			if (M22 && M22.ScriptCompiler) {
 				let hash = CURRENT_LINE_SPLIT[0].hashCode();
-				for (let k in M22.ScriptCompiler.CHAR_NAMES) {
-					if (k === hash) {
-						tempLine_c.m_speaker = M22.ScriptCompiler.CHAR_NAMES[k];
+				for (let k in M22.ScriptCompiler.CHAR_NAMES()) {
+					if (k == hash) {
+						tempLine_c.m_speaker = M22.ScriptCompiler.CHAR_NAMES()[k];
 						break;
 					}
 				}

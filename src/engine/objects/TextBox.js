@@ -12,12 +12,14 @@ class TextBox extends Container{
 
         this.currentText = '';
 
-        let xOffset = 35;
-        let yOffset = 52;
+		this._speaker = null;
+
+        let xOffset_text = 35;
+        let yOffset_text = 52;
 		this._text = new Text({
 			text: '',
-			x: xOffset,
-			y: yOffset,
+			x: xOffset_text,
+			y: yOffset_text,
             style: (
                 new TextStyle({
                     align: 'left',
@@ -25,13 +27,33 @@ class TextBox extends Container{
                     fill: '0xFEFEFE',
                     fontSize: 36,
 					wordWrap: true,
-					wordWrapWidth: (Settings.applicationSettings.width - xOffset - 20) * 2,
+					wordWrapWidth: (Settings.applicationSettings.width - xOffset_text - 20) * 2,
                 })
             )
 		});
 		this._text.scale.x = 0.5;
         this._text.scale.y = 0.5;
 		this.addChild(this._text);
+
+		let xOffset_name = 20;
+		let yOffset_name = 9;
+		this._name = new Text({
+			text: '',
+			x: xOffset_name,
+			y: yOffset_name,
+			style: (
+				new TextStyle({
+					align: 'left',
+					fontFamily: 'Comic Sans MS',
+					fill: '0xfefefe',
+					fontSize: Settings.textbox.nameFontSize * 2
+				})
+			)
+		});
+		this._name.scale.x = 0.5;
+		this._name.scale.y = 0.5;
+		this._name.renderable = false;
+		this.addChild(this._name);
 
 		this.zOrder = 1000;
 
@@ -47,6 +69,23 @@ class TextBox extends Container{
 
         this._text.text = this.currentText;
     }
+
+    _updateSpeakerUI(){
+		this._name.renderable = !!this._speaker;
+		this._name.text = this._speaker ? this._speaker.name : "";
+		this._name.style.fill = this._speaker ? this._speaker.color.hexColor : '#fefefe';
+    }
+
+	setSpeaker(val){
+		this._speaker = val;
+
+		this._updateSpeakerUI();
+	}
+
+	clearSpeaker(){
+		this._name.renderable = false;
+		this._speaker = null;
+	}
 
     hasFinishedLine(){
 		return !(this._text.text.length < this.currentText.length);
