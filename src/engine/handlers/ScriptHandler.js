@@ -31,7 +31,7 @@ class ScriptHandler {
 			return;
 		}
 
-		if(this._currentScript.length < this._currentLineIndex){
+		if(this._currentLineIndex >= this._currentScript.length){
 			console.error('Script ended without loading a new script or exiting; make sure to have an exit point!');
 			return;
 		}
@@ -58,7 +58,6 @@ class ScriptHandler {
 			M22.SceneHandler.textBox.clearSpeaker();
 			return;
 		} else if(line_c.m_lineType === LineTypes.DIALOGUE){
-            // TODO: handle DIALOGUE
 			M22.SceneHandler.textBox.setTextbox(M22.ScriptHandler.activeScript.getTextbox('dialogue').texture);
             M22.SceneHandler.textBox.setText(line_c.m_lineContents);
 			M22.SceneHandler.textBox.setSpeaker(line_c.m_speaker);
