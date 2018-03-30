@@ -45,6 +45,14 @@ class ScriptHandler {
 		this._currentScript = file;
 	}
 
+	/**
+	 * Gets the current line as a read-only data object (i.e. the .exec() will be unusable)
+	 * @returns {Object}
+	 */
+	get currentLine(){
+		return JSON.parse(JSON.stringify(this._currentLine));
+	}
+
     /**
 	 *
      * @param {line_c} line_c

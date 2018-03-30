@@ -13,6 +13,11 @@ class InputHandler {
 	}
 
 	setupGameKeys(){
+		if(this._inputInitialized){
+			console.warn("InputHandler.setupGameKeys() - Input is already initialized!");
+			return;
+		}
+
 		this._inputInitialized = true;
 
         window.addEventListener('keydown', (ev)=>{
@@ -25,10 +30,15 @@ class InputHandler {
 	}
 
 	handleNewLine(){
-		// TODO: use Settings.debugMode to allow devs to skip anything
-
-		if(M22.SceneHandler.textBox.hasFinishedLine())
-			M22.ScriptHandler.NextLine();
+		if(M22.SceneHandler.textBox.hasFinishedLine()){
+			if(
+				M22.ScriptHandler.currentLine.m_lineType === M22.ScriptCompiler.LINETYPES.NARRATIVE ||
+				M22.ScriptHandler.currentLine.m_lineType === M22.ScriptCompiler.LINETYPES.DIALOGUE  ||
+				Settings.debugMode === true
+			){
+				M22.ScriptHandler.NextLine();
+			}
+		}
 		else
 			M22.SceneHandler.textBox.finishLine();
 	}
