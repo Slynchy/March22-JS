@@ -50,6 +50,10 @@ class Settings {
 			}
 		};
 
+		this.loader = {
+			concurrentItems: 10 // Number of items to load in parallel
+		};
+
 		this.transitions = {
 			'tr_eyes' : 'tr_eyes.png',
 			'tr-checkwipe' : 'tr-checkwipe.png',

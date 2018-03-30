@@ -8,7 +8,7 @@ class AssetHandler {
 	constructor(){
 
 		// init props
-		this.concurrency = 10;
+		this.concurrency = Settings.loader.concurrentItems;
 		this._loader = null;
 
 		// use settings
