@@ -7,6 +7,7 @@ const CustomFunctionHandler = require('./handlers/CustomFunctionHandler.js');
 const SceneHandler = require('./handlers/SceneHandler.js');
 const AssetHandler = require('./handlers/AssetHandler.js');
 const ScriptHandler = require('./handlers/ScriptHandler.js');
+const EventHandler = require('./handlers/EventHandler.js');
 
 /**
  * Singleton master class for all M22 functionality
@@ -26,6 +27,7 @@ class March22 {
 		this.SceneHandler = new SceneHandler();
 		this.AssetHandler = new AssetHandler();
 		this.ScriptHandler = new ScriptHandler();
+		this.EventHandler = new EventHandler(this.SceneHandler.ticker);
 
 		this._domElement = null;
 
