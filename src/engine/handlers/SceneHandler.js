@@ -1,6 +1,7 @@
 const PIXI = require('pixi.js');
 const TextBox = require('../objects/TextBox.js');
 const Background = require('../objects/Background.js');
+const Character = require('../objects/Character.js');
 
 class SceneHandler {
 
@@ -115,8 +116,15 @@ class SceneHandler {
 		this._transitions = {};
 	}
 
-	AddCharacter(char){
+	AddCharacter(char, xOffset){
         console.log('Drawing char ' + char);
+
+		let charObj = new Character(M22.ScriptHandler.activeScript.getCharacter(char), {
+			xOffset: xOffset
+		});
+		this._characters.push(charObj);
+		this.scene.addChild(charObj);
+		return charObj;
 	}
 
 	RemoveCharacter(char){

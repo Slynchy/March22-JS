@@ -104,7 +104,11 @@ class M22Script {
 	}
 
     getCharacter(name, emotion){
-        return this._assets.characters[name+'/'+emotion].texture;
+		if(typeof emotion === 'undefined'){
+			return this._assets.characters[name].texture;
+		} else {
+			return this._assets.characters[name+'/'+emotion].texture;
+		}
     }
 
 	get checkpoints(){

@@ -43,6 +43,10 @@ class Settings {
 			},
 			Transition: {
 				postDrawDelay: 500, // Same as DrawBackground
+			},
+			DrawCharacter: {
+				scale: 0.8,
+				postDrawDelay: 500, // Same as DrawBackground
 			}
 		};
 
