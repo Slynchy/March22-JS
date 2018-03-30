@@ -22,35 +22,46 @@ class Background extends PIXI.Sprite{
 			Object.assign(this,props);
 	}
 
-	setTransition(sprite, fadeIn, callback){
+	/**
+	 *
+	 * @param {PIXI.Sprite} sprite
+	 * @param {bool} fadeIn
+	 * @param {float} speed
+	 * @param {float} startProgress The progress to start at (normally -1)
+	 * @param {Function} callback
+	 */
+	setTransition(sprite, fadeIn, speed, startProgress, callback){
 		if(this.interval){
 			clearInterval(this.interval);
 			this.interval = null;
 		}
 
+		this.speed = speed;
 		this.shader = new TransitionFilter(sprite, fadeIn);
 		this.filters = [this.shader];
 		if(Settings.applicationSettings.antialias){
 			this.filters.push(new PIXI.filters.FXAAFilter());
 		}
-		this.progress = -1;
 
-		this.interval = setInterval(()=>{
+		this.progress = startProgress;
+
+		this.interval = M22.EventHandler.ScheduleEvent(()=>{
 			this.shader.uniforms._Progress = this.progress += this.speed;
 
 			if(this.shader.uniforms._Progress > 1){
 				this.shader.uniforms._Progress = 1;
-				clearInterval(this.interval);
+				this.interval.stop();
 				if(callback){
 					callback();
 				}
 			}
-		}, Settings.transitionUpdateRate);
+		}, Settings.applicationSettings.deltaMultiplier, true);
 	}
 
-	update(){
-
-	}
+	/**
+	 * @deprecated ?
+	 */
+	update(){};
 }
 
 module.exports = Background;

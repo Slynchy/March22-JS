@@ -9,12 +9,15 @@ class Settings {
 			backgroundColor: 0x000000,
 			scaleMode: 0, // 0 == linear, 1 == nearest
 			PRECISION_FRAGMENT: 'highp',
+			deltaMultiplier: null,
+			targetFPS: 60,
 
 			// unneeded
 			antialias: true,
 			roundPixels: false,
 			renderScale: 1
 		};
+		this.applicationSettings.deltaMultiplier = 1000 / this.applicationSettings.targetFPS;
 
 		this.debugMode = true;
 
@@ -34,7 +37,14 @@ class Settings {
 			nameFontSize: 22,
 		};
 
-		this.transitionUpdateRate = 16.6667;
+		this.functionSettings = {
+			DrawBackground: {
+				postDrawDelay: 500, // Delay between finishing fadein animation and starting the next function
+			},
+			Transition: {
+				postDrawDelay: 500, // Same as DrawBackground
+			}
+		};
 
 		this.transitions = {
 			'tr_eyes' : 'tr_eyes.png',
