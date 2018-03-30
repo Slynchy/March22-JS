@@ -9,7 +9,6 @@ class SceneHandler {
 		PIXI.settings.PRECISION_FRAGMENT = PIXI.PRECISION.HIGH;
 		this._application = new PIXI.Application(Settings.applicationSettings);
         this._application.ticker.minFPS = Settings.applicationSettings.targetFPS;
-        this._application.ticker.speed = 16.667;
 
 		this._textBox = new TextBox();
 		this.scene.addChild(this._textBox);

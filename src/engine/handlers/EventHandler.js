@@ -8,7 +8,9 @@ class EventHandler {
 		this._queue = [];
 	}
 
-	_loop(dt){
+	_loop(){
+		let dt = M22.SceneHandler.ticker.elapsedMS;
+
 		for(let i = this._queue.length-1; i >= 0; i--){
 			if(this._queue[i].isComplete === true){
 				this._queue.splice(i, 1);
