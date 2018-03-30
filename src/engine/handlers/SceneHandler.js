@@ -19,6 +19,10 @@ class SceneHandler {
 
 		this._loopInterval = null;
 
+		this._lastSceneCount = 0;
+
+		this._updateSceneZOrder = false;
+
 		if(Settings.debugMode){
 			console.log("Debug mode");
 		}
@@ -27,17 +31,27 @@ class SceneHandler {
 	get ticker(){
 		return this._application.ticker;
 	}
+
+	updateZOrders(){
+		this._updateSceneZOrder = true;
+	}
+
 	startLoop(){
         this._application.ticker.add(this.mainLoop.bind(this));
 	}
 
 	mainLoop(){
-        this.scene.children.sort(function(a, b){
-            if(!a.zOrder) a.zOrder = 0;
-            if(!b.zOrder) b.zOrder = 0;
-            if(a.zOrder === b.zOrder) return 0;
-            else return (a.zOrder<b.zOrder ? -1 : 1);
-        });
+		if(this.scene.children.length !== this._lastSceneCount || this._updateSceneZOrder === true){
+			this.scene.children.sort(function(a, b){
+				if(!a.zOrder) a.zOrder = 0;
+				if(!b.zOrder) b.zOrder = 0;
+				if(a.zOrder === b.zOrder) return 0;
+				else return (a.zOrder<b.zOrder ? -1 : 1);
+			});
+
+			this._lastSceneCount = this.scene.children.length;
+			this._updateSceneZOrder = false;
+		}
 
 		// DO NOTHING
 		for(let i = 0; i < this._backgrounds.length; i++){
