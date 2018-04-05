@@ -16,6 +16,13 @@ class Background extends PIXI.Sprite{
         this.filters = [];
         this.progress = -1;
 
+		// if(Settings.applicationSettings.antialias){
+		// 	if(!this.filters){
+		// 		this.filters = [];
+		// 	}
+		// 	this.filters.push(new PIXI.filters.FXAAFilter());
+		// }
+
         this.speed = 0.01;
 
 		if(props)
@@ -39,9 +46,6 @@ class Background extends PIXI.Sprite{
 		this.speed = speed;
 		this.shader = new TransitionFilter(sprite, fadeIn);
 		this.filters = [this.shader];
-		if(Settings.applicationSettings.antialias){
-			this.filters.push(new PIXI.filters.FXAAFilter());
-		}
 
 		this.progress = startProgress;
 
@@ -49,7 +53,8 @@ class Background extends PIXI.Sprite{
 			this.shader.uniforms._Progress = this.progress += this.speed;
 
 			if(this.shader.uniforms._Progress > 1){
-				this.shader.uniforms._Progress = 1;
+				this.shader = null;
+				this.filters = [];
 				this.interval.stop();
 				if(callback){
 					callback();

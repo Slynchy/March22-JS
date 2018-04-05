@@ -5,8 +5,18 @@ class Character extends Sprite {
 	constructor(texture, props){
 		super(texture, {});
 
-		// this._xOffset = 0;
-		// this._yOffset = 0;
+		this.name = '';
+		this.fullName = '';
+		this.emotion = '';
+
+		if(!this.filters) this.filters = [];
+
+		this._xOffset = 0;
+		this._yOffset = 0;
+
+		this.shader = null;
+		this.filters = [];
+		this.progress = -1;
 
 		this.anchor.x = 0.5;
 		this.anchor.y = 1.0;
@@ -32,18 +42,27 @@ class Character extends Sprite {
 
 		this.speed = speed;
 		this.shader = new TransitionFilter(sprite, fadeIn);
+
 		this.filters = [this.shader];
-		if(Settings.applicationSettings.antialias){
-			this.filters.push(new PIXI.filters.FXAAFilter());
-		}
 
 		this.progress = startProgress;
 
 		this.interval = M22.EventHandler.ScheduleEvent(()=>{
 			this.shader.uniforms._Progress = this.progress += this.speed;
 
+			if(!fadeIn){
+				this.alpha = (1 - this.progress);
+			} else {
+				//null
+			}
+
 			if(this.shader.uniforms._Progress > 1){
-				this.shader.uniforms._Progress = 1;
+				if(!fadeIn) {
+					this.alpha = 0;
+					this.renderable = false;
+				}
+				this.filters = [];
+				this.shader = null;
 				this.interval.stop();
 				if(callback){
 					callback();

@@ -110,24 +110,62 @@ class SceneHandler {
 
 	RemoveTransitions(){
 		for(let k in this._transitions){
-			this._application.stage.removeChild(this._transitions[k]);
+			this.scene.removeChild(this._transitions[k]);
 		}
 		this._transitions = {};
+	}
+
+	isCharacterInScene(firstName){
+		return !!this.GetCharacterInScene(firstName);
+	}
+
+	GetCharacterInScene(firstName){
+		for(let i = 0; i < this._characters.length; i++){
+			if(this._characters[i].name === firstName){
+				return this._characters[i];
+			}
+		}
+		return null;
 	}
 
 	AddCharacter(char, xOffset){
         console.log('Drawing char ' + char);
 
 		let charObj = new Character(M22.ScriptHandler.activeScript.getCharacter(char), {
-			xOffset: xOffset
+			xOffset: xOffset,
+			name: char.split('/')[0],
+			fullName: char,
+			emotion: char.split('/')[1]
 		});
 		this._characters.push(charObj);
 		this.scene.addChild(charObj);
 		return charObj;
 	}
 
+	_removeCharEntries(chr){
+		for(let i = this._characters.length-1; i >= 0; i--){
+			if(this._characters[i].fullName === chr.fullName){
+				this._characters.splice(i, 1);
+			}
+		}
+	}
+
 	RemoveCharacter(char){
-        console.log('Removing char ' + char);
+        // find char
+		let chr = this.GetCharacterInScene(char);
+
+		if(!chr) throw new Error("Failed to remove character %s because they are not in the scene!", char);
+
+		chr.setTransition(
+			this.GetTransition('tr-normal_reversed'),
+			false,
+			0.01,
+			0,
+			()=>{
+				this.scene.removeChild(chr);
+				this._removeCharEntries(chr);
+			}
+		);
 	}
 
     RemoveCharacters(){

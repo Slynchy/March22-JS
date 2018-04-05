@@ -67,7 +67,8 @@ class Settings {
 			'tr-pronoise' : 'tr-pronoise.png',
 			'tr-softwipe' : 'tr-softwipe.png',
 			'tr-whipeh' : 'tr-wipeh.png',
-			'tr-normal' : 'tr-normal.png'
+			'tr-normal' : 'tr-normal.png',
+			'tr-normal_reversed' : 'tr-normal_reversed.png'
 		};
 	}
 }
