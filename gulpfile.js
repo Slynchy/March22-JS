@@ -6,6 +6,30 @@ let rimraf = require('rimraf');
 let copyDir = require('copy-dir');
 let LineTypes = require('./src/engine/LineTypes.js');
 
+const BabelOptions_Prod = {
+	global: true,
+	sourceMaps: false,
+	presets: [
+		'env'
+	],
+	comments: false,
+	compact: true,
+	minified: true,
+	sourceType: 'script'
+};
+
+const BabelOptions_Dev = {
+	global: true,
+	sourceMapsAbsolute: true,
+	sourceMaps: 'inline',
+	presets: [
+		'env'
+	],
+	comments: true,
+	compact: true,
+	sourceType: 'script'
+};
+
 function ClearBuildFolder(){
 	console.log("Clearing build folder...");
 	rimraf.sync('./build/*');
@@ -49,6 +73,11 @@ function build(isProduction){
 	console.log("Copying assets to build...");
 	copyDir.sync('./src/assets', './build/assets');
 
+	// if(!isProduction){
+	// 	console.log("Copying source code to build...");
+	// 	copyDir.sync('./src/engine', './build/engine');
+	// }
+
 	try
 	{
 		if(isProduction) console.log("Building bundle with Browserify + Babel + Uglifyify...");
@@ -57,9 +86,9 @@ function build(isProduction){
 		let result = fs.createWriteStream('./build/main.min.js');
 		let b;
 		if(isProduction){
-			b = browserify().transform(babel, { global: true  }).transform('uglifyify', { global: true  });
+			b = browserify().transform(babel, BabelOptions_Prod).transform('uglifyify', { global: true  });
 		} else {
-			b = browserify().transform(babel, { global: true  });
+			b = browserify({debug: true}).transform(babel, BabelOptions_Dev);
 		}
 
 		// Entrypoint
