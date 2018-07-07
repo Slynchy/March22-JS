@@ -60,7 +60,9 @@ typings/
 # next.js build output
 .next
 
-# Don't include minified index.js
+# compiled file, dont want that
 index.min.js
 
-build/
+src/game_engine
+include/
+dist/

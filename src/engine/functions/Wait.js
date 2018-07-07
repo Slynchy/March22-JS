@@ -1,6 +1,3 @@
-
-function Wait() {
-
-}
+function Wait() {}
 
 module.exports = Wait;

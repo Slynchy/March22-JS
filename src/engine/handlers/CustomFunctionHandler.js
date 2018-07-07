@@ -1,7 +1,5 @@
 class CustomFunctionHandler {
-	constructor(){
-
-	};
+	constructor() {}
 }
 
 module.exports = CustomFunctionHandler;

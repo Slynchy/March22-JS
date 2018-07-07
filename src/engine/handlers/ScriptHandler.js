@@ -1,38 +1,39 @@
 let LineTypes = require('../LineTypes.js');
 
 class ScriptHandler {
-	constructor(){
-
+	constructor(engine) {
 		this._currentScript = null;
 
+		this._engine = engine;
 		this._currentLineIndex = -1;
 		this._currentLine = null;
-	};
+	}
 
-	get activeScript(){
+	get activeScript() {
 		return this._currentScript;
 	}
 
-	GotoLine(lineIndex){
-		this._currentLineIndex = lineIndex-1;
+	GotoLine(lineIndex) {
+		this._currentLineIndex = lineIndex - 1;
 		this.NextLine();
 	}
 
-	Goto(checkpointName){
-		if(!this._currentScript.checkpoints.hasOwnProperty(checkpointName))
-			throw new Error("Goto failed; checkpoint doesnt exist!");
+	Goto(checkpointName) {
+		if (!this._currentScript.checkpoints.hasOwnProperty(checkpointName))
+			throw new Error('Goto failed; checkpoint doesnt exist!');
 
 		this.GotoLine(this._currentScript.checkpoints[checkpointName]);
 	}
 
-	NextLine(){
-		if(!this._currentScript) {
-			console.error("Cannot execute nextline; no active script");
-			return;
+	NextLine() {
+		if (!this._currentScript) {
+			throw new Error('Cannot execute nextline; no active script');
 		}
 
-		if(this._currentLineIndex >= this._currentScript.length){
-			console.error('Script ended without loading a new script or exiting; make sure to have an exit point!');
+		if (this._currentLineIndex >= this._currentScript.length) {
+			console.error(
+				'Script ended without loading a new script or exiting; make sure to have an exit point!'
+			);
 			return;
 		}
 
@@ -41,7 +42,7 @@ class ScriptHandler {
 		this.ExecuteFunction(this._currentLine);
 	}
 
-	LoadScript(file){
+	LoadScript(file) {
 		this._currentScript = file;
 	}
 
@@ -49,30 +50,41 @@ class ScriptHandler {
 	 * Gets the current line as a read-only data object (i.e. the .exec() will be unusable)
 	 * @returns {Object}
 	 */
-	get currentLine(){
+	get currentLine() {
 		return JSON.parse(JSON.stringify(this._currentLine));
 	}
 
-    /**
+	/**
 	 *
-     * @param {line_c} line_c
-     * @param {boolean} [isInline]
-     * @constructor
-     */
-	ExecuteFunction(line_c, isInline){
-		if(line_c.m_lineType === LineTypes.NARRATIVE){
-			M22.SceneHandler.textBox.setTextbox(M22.ScriptHandler.activeScript.getTextbox('narrative').texture);
-			M22.SceneHandler.textBox.setText(line_c.m_lineContents);
-			M22.SceneHandler.textBox.clearSpeaker();
+	 * @param {line_c} line_c
+	 * @param {boolean} [isInline]
+	 * @constructor
+	 */
+	ExecuteFunction(line_c, isInline) {
+
+		/*
+			Just to make the shitting compiler shut up
+		 */
+		if(isInline)
+			isInLine = !!isInLine;
+
+		if (line_c.m_lineType === LineTypes.NARRATIVE) {
+			this._engine.SceneHandler.textBox.setTextbox(
+				this._engine.ScriptHandler.activeScript.getTextbox('narrative').texture
+			);
+			this._engine.SceneHandler.textBox.setText(line_c.m_lineContents);
+			this._engine.SceneHandler.textBox.clearSpeaker();
 			return;
-		} else if(line_c.m_lineType === LineTypes.DIALOGUE){
-			M22.SceneHandler.textBox.setTextbox(M22.ScriptHandler.activeScript.getTextbox('dialogue').texture);
-            M22.SceneHandler.textBox.setText(line_c.m_lineContents);
-			M22.SceneHandler.textBox.setSpeaker(line_c.m_speaker);
+		} else if (line_c.m_lineType === LineTypes.DIALOGUE) {
+			this._engine.SceneHandler.textBox.setTextbox(
+				this._engine.ScriptHandler.activeScript.getTextbox('dialogue').texture
+			);
+			this._engine.SceneHandler.textBox.setText(line_c.m_lineContents);
+			this._engine.SceneHandler.textBox.setSpeaker(line_c.m_speaker);
 			return;
 		}
 
-		line_c.exec();
+		line_c.exec(this._engine);
 	}
 }
 

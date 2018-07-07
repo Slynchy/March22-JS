@@ -1,46 +1,46 @@
 class InputHandler {
-	constructor(){
-
+	constructor(engine) {
+		this._engine = engine;
 		this._inputInitialized = false;
 
-		if(Settings.gameMode){
+		if (Settings.gameMode) {
 			this.setupGameKeys();
 		}
-	};
+	}
 
-	isInitialized(){
+	isInitialized() {
 		return this._inputInitialized;
 	}
 
-	setupGameKeys(){
-		if(this._inputInitialized){
-			console.warn("InputHandler.setupGameKeys() - Input is already initialized!");
+	setupGameKeys() {
+		if (this._inputInitialized) {
+			console.warn('InputHandler.setupGameKeys() - Input is already initialized!');
 			return;
 		}
 
 		this._inputInitialized = true;
 
-        window.addEventListener('keydown', (ev)=>{
-            switch(ev.which || ev.keyCode){
-                case 13:
-                    this.handleNewLine();
-                    return;
-            }
-        });
+		window.addEventListener('keydown', ev => {
+			switch (ev.which || ev.keyCode) {
+			case 13:
+				this.handleNewLine();
+				return;
+			}
+		});
 	}
 
-	handleNewLine(){
-		if(M22.SceneHandler.textBox.hasFinishedLine()){
-			if(
-				M22.ScriptHandler.currentLine.m_lineType === M22.ScriptCompiler.LINETYPES.NARRATIVE ||
-				M22.ScriptHandler.currentLine.m_lineType === M22.ScriptCompiler.LINETYPES.DIALOGUE  ||
+	handleNewLine() {
+		if (this._engine.SceneHandler.textBox.hasFinishedLine()) {
+			if (
+				this._engine.ScriptHandler.currentLine.m_lineType ===
+					this._engine.ScriptCompiler.LINETYPES.NARRATIVE ||
+				this._engine.ScriptHandler.currentLine.m_lineType ===
+					this._engine.ScriptCompiler.LINETYPES.DIALOGUE ||
 				Settings.debugMode === true
-			){
-				M22.ScriptHandler.NextLine();
+			) {
+				this._engine.ScriptHandler.NextLine();
 			}
-		}
-		else
-			M22.SceneHandler.textBox.finishLine();
+		} else this._engine.SceneHandler.textBox.finishLine();
 	}
 }
 

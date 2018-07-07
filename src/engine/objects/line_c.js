@@ -1,15 +1,15 @@
-
+const LineTypes = require('../LineTypes.js');
 
 class line_c {
 	constructor(props) {
-		this.m_lineType = M22.ScriptCompiler.LINETYPES.NULL_OPERATOR;
+		this.m_lineType = LineTypes.NULL_OPERATOR;
 		this.m_lineTypeSecondary = null;
 
 		this.m_parameters = [];
 
-		this.m_lineContents = "";
+		this.m_lineContents = '';
 
-		this.m_speaker = "";
+		this.m_speaker = '';
 
 		this.m_ID = 0;
 
@@ -19,19 +19,22 @@ class line_c {
 
 		this.m_skipToNextLine = false;
 
-		this.exec = ()=>{};
+		this.exec = () => {};
 
 		if (props) {
 			Object.assign(this, props);
 		}
 	}
 
-	setFunction(func){
-		this.exec = ()=>{
-			func.bind(this)();
-			if(this.m_skipToNextLine)
-				M22.ScriptHandler.NextLine();
-        }
+	/**
+	 *
+	 * @param {Function} func
+	 */
+	setFunction(func) {
+		this.exec = (Engine) => {
+			func.bind(this)(Engine);
+			if (this.m_skipToNextLine) Engine.ScriptHandler.NextLine();
+		};
 	}
 }
 

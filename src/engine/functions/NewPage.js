@@ -1,4 +1,3 @@
-
 function NewPage() {
 	this.m_skipToNextLine = true;
 }

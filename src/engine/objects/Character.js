@@ -2,14 +2,14 @@ let Sprite = require('pixi.js').Sprite;
 let TransitionFilter = require('./TransitionFilter.js');
 
 class Character extends Sprite {
-	constructor(texture, props){
+	constructor(texture, props) {
 		super(texture, {});
 
 		this.name = '';
 		this.fullName = '';
 		this.emotion = '';
 
-		if(!this.filters) this.filters = [];
+		if (!this.filters) this.filters = [];
 
 		this._xOffset = 0;
 		this._yOffset = 0;
@@ -20,75 +20,75 @@ class Character extends Sprite {
 
 		this.anchor.x = 0.5;
 		this.anchor.y = 1.0;
-		this.y = (Settings.applicationSettings.height);
+		this.y = Settings.applicationSettings.height;
 
 		this.scale.x = Settings.functionSettings.DrawCharacter.scale;
 		this.scale.y = Settings.functionSettings.DrawCharacter.scale;
 		this.zOrder = 500;
 
-		if(props)
-			Object.assign(this,props);
+		if (props) Object.assign(this, props);
 	}
 
-    update(){
+	update() {}
 
-    }
-
-	setTransition(sprite, fadeIn, speed, startProgress, callback){
-		if(this.interval){
+	setTransition(sprite, fadeIn, speed, startProgress, callback) {
+		if (this.interval) {
 			clearInterval(this.interval);
 			this.interval = null;
 		}
 
 		this.speed = speed;
-		this.shader = new TransitionFilter(sprite, fadeIn);
+		this.shader = new TransitionFilter(sprite, true);
 
 		this.filters = [this.shader];
 
 		this.progress = startProgress;
+		this.shader.uniforms._Progress = this.progress;
 
-		this.interval = M22.EventHandler.ScheduleEvent(()=>{
-			this.shader.uniforms._Progress = this.progress += this.speed;
+		this.interval = EventHandler.ScheduleEvent(
+			() => {
+				if(fadeIn)
+					this.progress += this.speed;
+				else
+					this.progress -= this.speed;
 
-			if(!fadeIn){
-				this.alpha = (1 - this.progress);
-			} else {
-				//null
-			}
+				this.shader.uniforms._Progress = this.progress;
 
-			if(this.shader.uniforms._Progress > 1){
-				if(!fadeIn) {
-					this.alpha = 0;
-					this.renderable = false;
+				if ((fadeIn && this.progress >= 0) || (!fadeIn && this.progress <= -1)) {
+					this.interval.stop();
+					if (!fadeIn) {
+						this.renderable = false;
+					}
+					this.filters = [];
+					this.shader = null;
+					if (callback) {
+						callback();
+					}
 				}
-				this.filters = [];
-				this.shader = null;
-				this.interval.stop();
-				if(callback){
-					callback();
-				}
-			}
-		}, Settings.applicationSettings.deltaMultiplier, true);
+			},
+			Settings.applicationSettings.deltaMultiplier,
+			true
+		);
 	}
 
-	get xOffset(){
+	get xOffset() {
 		return this._xOffset;
 	}
 
-	set xOffset(val){
+	set xOffset(val) {
 		this._xOffset = val;
 
-		this.x = (Settings.applicationSettings.width / 2) + this._xOffset;
+		this.x = Settings.applicationSettings.width / 2 + this._xOffset;
 	}
 
-	get yOffset(){
+	get yOffset() {
 		return this._yOffset;
 	}
 
-	set yOffset(val){
+	set yOffset(val) {
 		this._yOffset = val;
 
-		this.y = (Settings.applicationSettings.height) + this._yOffset;
+		this.y = Settings.applicationSettings.height + this._yOffset;
 	}
 }
 

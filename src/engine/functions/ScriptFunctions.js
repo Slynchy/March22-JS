@@ -1,9 +1,9 @@
 const LineTypes = require('../LineTypes.js');
 
-let Functions = {};
+const Functions = {};
 
-for(let k in LineTypes){
-	if(
+for (let k in LineTypes) {
+	if (
 		LineTypes[k] === LineTypes.COMMENT ||
 		LineTypes[k] === LineTypes.NUM_OF_LINETYPES ||
 		LineTypes[k] === LineTypes.NULL_OPERATOR ||
@@ -11,10 +11,10 @@ for(let k in LineTypes){
 		LineTypes[k] === LineTypes.NARRATIVE ||
 		LineTypes[k] === LineTypes.DIALOGUE ||
 		LineTypes[k] === LineTypes.NUM_OF_LINETYPES
-	){
-		Functions[LineTypes[k]] = function(){};
+	) {
+		Functions[LineTypes[k]] = function() {};
 	} else {
-		Functions[LineTypes[k]] = require('__' + LineTypes[k]);
+		Functions[LineTypes[k]] = require('./' + LineTypes[k] + '.js'); //require('__' + LineTypes[k]);
 	}
 }
 

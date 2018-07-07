@@ -1,6 +1,3 @@
-
-function StopLoopedSting() {
-
-}
+function StopLoopedSting() {}
 
 module.exports = StopLoopedSting;

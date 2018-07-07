@@ -1,20 +1,18 @@
 let PIXI = require('pixi.js');
 let TransitionFilter = require('./TransitionFilter.js');
+let GameObject = require('fbengine').GameObject;
 
-class Background extends PIXI.Sprite{
-	constructor(texture, props){
+class Background extends GameObject {
+	constructor(texture, props) {
 		super(texture, {});
 
-        this.x = 0;
-        this.y = 0;
+		let oldHeight = this.height;
+		this.height = Settings.applicationSettings.height;
+		this.width = texture.width * (this.height / oldHeight);
 
-        let oldHeight = this.height;
-        this.height = M22.SceneHandler.renderer.height;
-        this.width = texture.width * (this.height / oldHeight);
-
-        this.shader = null;
-        this.filters = [];
-        this.progress = -1;
+		this.shader = null;
+		this.filters = [];
+		this.progress = -1;
 
 		// if(Settings.applicationSettings.antialias){
 		// 	if(!this.filters){
@@ -23,10 +21,9 @@ class Background extends PIXI.Sprite{
 		// 	this.filters.push(new PIXI.filters.FXAAFilter());
 		// }
 
-        this.speed = 0.01;
+		this.speed = 0.01;
 
-		if(props)
-			Object.assign(this,props);
+		if (props) Object.assign(this, props);
 	}
 
 	/**
@@ -37,8 +34,8 @@ class Background extends PIXI.Sprite{
 	 * @param {float} startProgress The progress to start at (normally -1)
 	 * @param {Function} callback
 	 */
-	setTransition(sprite, fadeIn, speed, startProgress, callback){
-		if(this.interval){
+	setTransition(sprite, fadeIn, speed, startProgress) {
+		if (this.interval) {
 			clearInterval(this.interval);
 			this.interval = null;
 		}
@@ -48,25 +45,35 @@ class Background extends PIXI.Sprite{
 		this.filters = [this.shader];
 
 		this.progress = startProgress;
+	}
 
-		this.interval = M22.EventHandler.ScheduleEvent(()=>{
-			this.shader.uniforms._Progress = this.progress += this.speed;
+	startTransition(callback){
+		if(!this.shader){
+			throw new Error("Cannot start transition; there is no shader!");
+		}
 
-			if(this.shader.uniforms._Progress > 1){
-				this.shader = null;
-				this.filters = [];
-				this.interval.stop();
-				if(callback){
-					callback();
+		this.interval = EventHandler.ScheduleEvent(
+			() => {
+				this.shader.uniforms._Progress = this.progress += this.speed;
+
+				if (this.shader.uniforms._Progress > 1) {
+					this.shader = null;
+					this.filters = [];
+					this.interval.stop();
+					if (callback) {
+						callback();
+					}
 				}
-			}
-		}, Settings.applicationSettings.deltaMultiplier, true);
+			},
+			Settings.applicationSettings.deltaMultiplier,
+			true
+		);
 	}
 
 	/**
 	 * @deprecated ?
 	 */
-	update(){};
+	update() {}
 }
 
 module.exports = Background;

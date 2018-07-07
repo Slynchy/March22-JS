@@ -1,23 +1,36 @@
-
 // TODO: Evaluate the deprecation of Transition.js if DrawBackground is functionally similar
-function DrawBackground() {
-    let bg = M22.SceneHandler.AddBackground(this.m_parameters[0]);
-
-	bg.setTransition(
-		M22.SceneHandler.GetTransition('tr-normal'),
-		false,
-		0.01,
-		0,
-		()=>{
-			M22.SceneHandler.ClearOldBackgrounds();
-
-			M22.EventHandler.ScheduleEvent(()=>{
-				M22.ScriptHandler.NextLine();
-			}, Settings.functionSettings.DrawBackground.postDrawDelay, false);
-		}
-	);
+function DrawBackground(Engine) {
+	let bg = Engine.SceneHandler.AddBackground(this.m_parameters[0]);
 
 	this.m_skipToNextLine = (this.m_parameters[5] === true);
+
+	bg.setTransition(
+		Engine.SceneHandler.GetTransition('tr-normal'),
+		true,
+		Settings.functionSettings.DrawBackground.transitionSpeed,
+		-1
+	);
+
+	Engine.EventHandler.ScheduleEvent(
+		()=>{
+
+			bg.startTransition(
+				() => {
+					Engine.SceneHandler.ClearOldBackgrounds();
+
+					Engine.EventHandler.ScheduleEvent(
+						()=>{
+							Engine.ScriptHandler.NextLine();
+						},
+						Settings.functionSettings.DrawBackground.postDrawDelay,
+						false
+					);
+				}
+			);
+		},
+		Settings.functionSettings.DrawBackground.preDrawDelay || 1,
+		false
+	);
 }
 
 module.exports = DrawBackground;

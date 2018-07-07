@@ -1,6 +1,3 @@
-
-function SetFlag() {
-
-}
+function SetFlag() {}
 
 module.exports = SetFlag;

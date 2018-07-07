@@ -1,4 +1,3 @@
-
 function PlayLoopedSting() {
 	console.log('PlayLoopedSting ' + this.m_parameters[0]);
 

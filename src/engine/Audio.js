@@ -1,7 +1,5 @@
 class Audio {
-	constructor(){
-
-	};
+	constructor() {}
 }
 
 module.exports = Audio;

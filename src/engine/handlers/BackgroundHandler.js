@@ -1,7 +1,5 @@
 class BackgroundHandler {
-	constructor(){
-
-	};
+	constructor() {}
 }
 
 module.exports = BackgroundHandler;

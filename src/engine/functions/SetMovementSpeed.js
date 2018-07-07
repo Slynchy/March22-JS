@@ -1,6 +1,3 @@
-
-function SetMovementSpeed() {
-
-}
+function SetMovementSpeed() {}
 
 module.exports = SetMovementSpeed;

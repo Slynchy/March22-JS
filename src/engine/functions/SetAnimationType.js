@@ -1,6 +1,3 @@
-
-function SetAnimationType() {
-
-}
+function SetAnimationType() {}
 
 module.exports = SetAnimationType;

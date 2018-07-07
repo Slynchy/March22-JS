@@ -1,4 +1,3 @@
-
 function StopMusic() {
 	console.log('StopMusic @ speed of ' + this.m_parameters[0]);
 

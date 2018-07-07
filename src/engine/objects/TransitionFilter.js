@@ -1,22 +1,22 @@
 let PIXI = require('pixi.js');
 
-class TransitionFilter extends PIXI.Filter
-{
+class TransitionFilter extends PIXI.Filter {
 	/**
 	 * @param {PIXI.Sprite} sprite
-	 * @param {bool} fadeIn
+	 * @param {boolean} fadeIn
 	 */
-	constructor(sprite, fadeIn)
-	{
+	constructor(sprite, fadeIn) {
 		const maskMatrix = new PIXI.Matrix();
 
 		sprite.renderable = false;
 
 		super(
 			// vertex shader
-			document.getElementById("vertexShader").innerHTML,
+			document.getElementById('vertexShader').innerHTML,
 			// fragment shader
-			fadeIn ? document.getElementById("transitionShaderIn").innerHTML : document.getElementById("transitionShaderOut").innerHTML
+			fadeIn
+				? document.getElementById('transitionShaderIn').innerHTML
+				: document.getElementById('transitionShaderOut').innerHTML
 		);
 
 		this.maskSprite = sprite;
@@ -27,7 +27,7 @@ class TransitionFilter extends PIXI.Filter
 		this.uniforms.filterMatrix = maskMatrix;
 		this.uniforms.scale = { x: 1, y: 1 };
 
-		this.fadeIn = (fadeIn == true);
+		this.fadeIn = fadeIn == true;
 		this.uniforms._Progress = -1;
 
 		this.scale = new PIXI.Point(20, 20);
@@ -40,9 +40,11 @@ class TransitionFilter extends PIXI.Filter
 	 * @param {PIXI.RenderTarget} input - The input target.
 	 * @param {PIXI.RenderTarget} output - The output target.
 	 */
-	apply(filterManager, input, output)
-	{
-		this.uniforms.filterMatrix = filterManager.calculateSpriteMatrix(this.maskMatrix, this.maskSprite);
+	apply(filterManager, input, output) {
+		this.uniforms.filterMatrix = filterManager.calculateSpriteMatrix(
+			this.maskMatrix,
+			this.maskSprite
+		);
 		this.uniforms.scale.x = this.scale.x;
 		this.uniforms.scale.y = this.scale.y;
 
@@ -55,13 +57,13 @@ class TransitionFilter extends PIXI.Filter
 	 *
 	 * @member {PIXI.Texture}
 	 */
-	get map()
-	{
+	get map() {
 		return this.uniforms._SecondaryTex;
 	}
 
-	set map(value) // eslint-disable-line require-jsdoc
-	{
+	set map(
+		value // eslint-disable-line require-jsdoc
+	) {
 		this.uniforms._SecondaryTex = value;
 	}
 }

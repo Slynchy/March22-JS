@@ -1,6 +1,5 @@
-
-function ClearCharacters() {
-    M22.SceneHandler.RemoveCharacters();
+function ClearCharacters(Engine) {
+	Engine.SceneHandler.RemoveCharacters();
 }
 
 module.exports = ClearCharacters;

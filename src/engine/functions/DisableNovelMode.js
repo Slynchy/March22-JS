@@ -1,6 +1,5 @@
-
-function DisableNovelMode() {
-    M22.SceneHandler.textBox.disableNovelMode();
+function DisableNovelMode(Engine) {
+	Engine.SceneHandler.textBox.disableNovelMode();
 }
 
 module.exports = DisableNovelMode;

@@ -1,6 +1,5 @@
 class Settings {
-	constructor(){
-
+	constructor() {
 		this.applicationSettings = {
 			width: 800,
 			height: 600,
@@ -19,34 +18,36 @@ class Settings {
 		};
 		this.applicationSettings.deltaMultiplier = 1000 / this.applicationSettings.targetFPS;
 
-		this.debugMode = true;
+		this.debugMode = false;
 
 		this.gameMode = true;
 
 		this.AssetHandlerSettings = {
-
 			/**
 			 * If true, assetloader will replace unloadable textures/assets with empty ones, so the game still runs
 			 */
 			safeMode: true,
-			concurrency: 10,
+			concurrency: 10
 		};
 
 		this.textbox = {
 			yOffset: -15,
-			nameFontSize: 22,
+			nameFontSize: 22
 		};
 
 		this.functionSettings = {
 			DrawBackground: {
-				postDrawDelay: 500, // Delay between finishing fadein animation and starting the next function
+				transitionSpeed: 0.005,
+				preDrawDelay: 500, // Delay between function start and fadein animation
+				postDrawDelay: 500 // Delay between finishing fadein animation and starting the next function
 			},
 			Transition: {
-				postDrawDelay: 500, // Same as DrawBackground
+				postDrawDelay: 500
 			},
 			DrawCharacter: {
-				scale: 0.8,
-				postDrawDelay: 500, // Same as DrawBackground
+				scale: 1.0,
+				transitionSpeed: 0.005,
+				postDrawDelay: 1
 			}
 		};
 
@@ -55,25 +56,25 @@ class Settings {
 		};
 
 		this.transitions = {
-			'tr_eyes' : 'tr_eyes.png',
-			'tr-checkwipe' : 'tr-checkwipe.png',
-			'tr-checkwipe2' : 'tr-checkwipe2.png',
-			'tr-clockwipe' : 'tr-clockwipe.png',
-			'tr-delayblinds' : 'tr-delayblinds.png',
-			'tr-dots_col' : 'tr-dots_col.png',
-			'tr-flashback' : 'tr-flashback.png',
-			'tr-letter' : 'tr-letter.png',
-			'tr-openshock' : 'tr-openshock.png',
-			'tr-pronoise' : 'tr-pronoise.png',
-			'tr-softwipe' : 'tr-softwipe.png',
-			'tr-whipeh' : 'tr-wipeh.png',
-			'tr-normal' : 'tr-normal.png',
-			'tr-normal_reversed' : 'tr-normal_reversed.png'
+			'tr_eyes': 'tr_eyes.png',
+			'tr-checkwipe': 'tr-checkwipe.png',
+			'tr-checkwipe2': 'tr-checkwipe2.png',
+			'tr-clockwipe': 'tr-clockwipe.png',
+			'tr-delayblinds': 'tr-delayblinds.png',
+			'tr-dots_col': 'tr-dots_col.png',
+			'tr-flashback': 'tr-flashback.png',
+			'tr-letter': 'tr-letter.png',
+			'tr-openshock': 'tr-openshock.png',
+			'tr-pronoise': 'tr-pronoise.png',
+			'tr-softwipe': 'tr-softwipe.png',
+			'tr-whipeh': 'tr-wipeh.png',
+			'tr-normal': 'tr-normal.png',
+			'tr-normal_reversed': 'tr-normal_reversed.png'
 		};
 	}
 }
 
-if(!global.hasOwnProperty('Settings')){
+if (!global.hasOwnProperty('Settings')) {
 	global.Settings = new Settings();
 }
 

@@ -1,7 +1,5 @@
-
-function EnableNovelMode() {
-    M22.ScriptHandler.enableNovelMode();
+function EnableNovelMode(Engine) {
+	Engine.ScriptHandler.enableNovelMode();
 }
-
 
 module.exports = EnableNovelMode;

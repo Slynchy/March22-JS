@@ -1,7 +1,5 @@
 class CharacterHandler {
-	constructor(){
-
-	};
+	constructor() {}
 }
 
 module.exports = CharacterHandler;

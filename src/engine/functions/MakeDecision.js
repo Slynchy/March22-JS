@@ -1,6 +1,3 @@
-
-function MakeDecision() {
-
-}
+function MakeDecision() {}
 
 module.exports = MakeDecision;

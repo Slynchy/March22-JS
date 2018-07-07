@@ -1,6 +1,3 @@
-
-function SetTextSpeed() {
-
-}
+function SetTextSpeed() {}
 
 module.exports = SetTextSpeed;

@@ -1,22 +1,25 @@
-
-function Transition() {
-	let bg = M22.SceneHandler.AddBackground(this.m_parameters[0]);
+function Transition(Engine) {
+	let bg = Engine.SceneHandler.AddBackground(this.m_parameters[0]);
 
 	bg.setTransition(
-		M22.SceneHandler.GetTransition(this.m_parameters[1]),
+		Engine.SceneHandler.GetTransition(this.m_parameters[1]),
 		this.m_parameters[2],
 		this.m_parameters[3],
 		-1,
-		()=>{
-			M22.SceneHandler.ClearOldBackgrounds();
+		() => {
+			Engine.SceneHandler.ClearOldBackgrounds();
 
-			M22.EventHandler.ScheduleEvent(()=>{
-				M22.ScriptHandler.NextLine();
-			}, Settings.functionSettings.Transition.postDrawDelay, false);
+			Engine.EventHandler.ScheduleEvent(
+				() => {
+					Engine.ScriptHandler.NextLine();
+				},
+				Settings.functionSettings.Transition.postDrawDelay,
+				false
+			);
 		}
 	);
 
-	this.m_skipToNextLine = (this.m_parameters[5] === true);
+	this.m_skipToNextLine = this.m_parameters[5] === true;
 }
 
 module.exports = Transition;

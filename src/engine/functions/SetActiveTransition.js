@@ -1,6 +1,3 @@
-
-function SetActiveTransition() {
-
-}
+function SetActiveTransition() {}
 
 module.exports = SetActiveTransition;

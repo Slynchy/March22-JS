@@ -10,9 +10,15 @@
 
 	A light breeze causes the naked branches overhead to rattle like wooden windchimes.
 
+	//DrawCharacter shizu behind_blank 0
+
 	//Goto debugGotolmao
 
 	This is a popular retreat for couples in the summer. The deciduous trees provide a beautiful green canopy, far out of sight of teachers and fellow students.
+
+    //ClearCharacter shizu
+    //DrawCharacter shizu adjust_happy 0
+    //DrawCharacter shizu behind_smile 300
 
 	//ExecuteFunction heart_throb 4.0 2.0
 
