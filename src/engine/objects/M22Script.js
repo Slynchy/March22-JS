@@ -1,4 +1,4 @@
-const LineTypes = require("../LineTypes.js");
+const LineTypes = require('../LineTypes.js');
 
 class M22Script {
 	constructor() {

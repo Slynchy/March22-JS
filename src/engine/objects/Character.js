@@ -47,10 +47,8 @@ class Character extends Sprite {
 
 		this.interval = EventHandler.ScheduleEvent(
 			() => {
-				if(fadeIn)
-					this.progress += this.speed;
-				else
-					this.progress -= this.speed;
+				if (fadeIn) this.progress += this.speed;
+				else this.progress -= this.speed;
 
 				this.shader.uniforms._Progress = this.progress;
 

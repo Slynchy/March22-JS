@@ -10,14 +10,18 @@
 
 	A light breeze causes the naked branches overhead to rattle like wooden windchimes.
 
-	//DrawCharacter shizu behind_blank 0
+    //Goto debuggoto
+
+	DrawCharacter shizu behind_blank 0
 
 	//Goto debugGotolmao
+
+	Wait 1000
 
 	This is a popular retreat for couples in the summer. The deciduous trees provide a beautiful green canopy, far out of sight of teachers and fellow students.
 
     //ClearCharacter shizu
-    //DrawCharacter shizu adjust_happy 0
+    DrawCharacter shizu adjust_happy 0
     //DrawCharacter shizu behind_smile 300
 
 	//ExecuteFunction heart_throb 4.0 2.0
@@ -64,7 +68,7 @@
 
 	HideWindow
 
-	DrawBackground other_iwanako
+	DrawBackground other_iwanako 0 0 1.0 1.0 tr-softwipe false
 
 	ShowWindow
 
@@ -77,8 +81,6 @@
 	iwanako "Ahmm… yes. I asked a friend to give you that note… I'm so glad you got it."
 
 	A shy, joyous smile that makes me so tense I couldn't move a single muscle even if I tried.
-
-	--debuggoto
 
 	//stop music fadeout 10.0
 	StopMusic
@@ -189,6 +191,8 @@
 	ExecuteFunction heart_throb 4.0 2.0
 	Wait 600
 	ShowWindow
+
+	--debuggoto
 
 	My whole body freezes, save for my eyes, which shoot open in terror.
 

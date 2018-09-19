@@ -13,6 +13,8 @@ const EventHandler = require('./handlers/EventHandler.js');
  *
  * From all handlers, we assume global.M22 === the singleton instance, because
  * the handler shouldn't exist without the primary engine being created.
+ *
+ * ^^^ All of this is incorrect, TODO: update!
  */
 class March22 {
 	constructor() {

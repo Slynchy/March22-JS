@@ -19,10 +19,20 @@ class ScriptHandler {
 	}
 
 	Goto(checkpointName) {
-		if (!this._currentScript.checkpoints.hasOwnProperty(checkpointName))
-			throw new Error('Goto failed; checkpoint doesnt exist!');
+		let found = false;
+		for (let i = 0; i < this._currentScript.checkpoints.length; i++) {
+			let curr = this._currentScript.checkpoints[i];
+			if (curr.m_name === checkpointName) {
+				found = i;
+				break;
+			}
+		}
+		if (!found) throw new Error("goto failed, checkpoint doesn't exist");
 
-		this.GotoLine(this._currentScript.checkpoints[checkpointName]);
+		// if (!this._currentScript.checkpoints.hasOwnProperty(checkpointName))
+		// 	throw new Error('Goto failed; checkpoint doesnt exist!');
+
+		this.GotoLine(this._currentScript.checkpoints[found].m_position);
 	}
 
 	NextLine() {
@@ -61,12 +71,10 @@ class ScriptHandler {
 	 * @constructor
 	 */
 	ExecuteFunction(line_c, isInline) {
-
 		/*
 			Just to make the shitting compiler shut up
 		 */
-		if(isInline)
-			isInLine = !!isInLine;
+		if (isInline) isInLine = !!isInLine;
 
 		if (line_c.m_lineType === LineTypes.NARRATIVE) {
 			this._engine.SceneHandler.textBox.setTextbox(

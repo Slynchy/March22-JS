@@ -47,9 +47,9 @@ class Background extends GameObject {
 		this.progress = startProgress;
 	}
 
-	startTransition(callback){
-		if(!this.shader){
-			throw new Error("Cannot start transition; there is no shader!");
+	startTransition(callback) {
+		if (!this.shader) {
+			throw new Error('Cannot start transition; there is no shader!');
 		}
 
 		this.interval = EventHandler.ScheduleEvent(

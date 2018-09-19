@@ -33,8 +33,8 @@ class SceneHandler {
 		return this._application.ticker;
 	}
 
-	resize(){
-		if(this.renderer){
+	resize() {
+		if (this.renderer) {
 			this.renderer.resize(
 				Settings.applicationSettings.width,
 				Settings.applicationSettings.height
@@ -82,7 +82,7 @@ class SceneHandler {
 
 	GetTransition(key) {
 		for (let k in this._transitions) {
-			if(!this._transitions.hasOwnProperty(k)) continue;
+			if (!this._transitions.hasOwnProperty(k)) continue;
 			if (k === key) {
 				/*
 					Explanation: The shader relies on an in-scene sprite, but we can't set renderable=false in the
@@ -156,16 +156,12 @@ class SceneHandler {
 		let chr = this.GetCharacterInScene(char);
 
 		if (!chr)
-			console.warn(
-				'Failed to remove character %s because they are not in the scene!',
-				char
-			);
+			console.warn('Failed to remove character %s because they are not in the scene!', char);
 
 		chr.setTransition(this.GetTransition('tr-normal'), false, 0.005, 0, () => {
 			this.scene.removeChild(chr);
 			this._removeCharEntries(chr);
-			if(callback)
-				callback();
+			if (callback) callback();
 		});
 	}
 

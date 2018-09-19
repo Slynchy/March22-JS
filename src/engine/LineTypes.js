@@ -1,6 +1,4 @@
-
-
-module.exports = (function(){
+module.exports = (function() {
 	const LINE_TYPES = {
 		NULL_OPERATOR: 'nopnopnop',
 		NEW_PAGE: 'NewPage',

@@ -37,16 +37,16 @@ class Settings {
 
 		this.functionSettings = {
 			DrawBackground: {
-				transitionSpeed: 0.005,
+				transitionSpeed: 0.01,
 				preDrawDelay: 500, // Delay between function start and fadein animation
-				postDrawDelay: 500 // Delay between finishing fadein animation and starting the next function
+				postDrawDelay: 1 // Delay between finishing fadein animation and starting the next function
 			},
 			Transition: {
 				postDrawDelay: 500
 			},
 			DrawCharacter: {
 				scale: 1.0,
-				transitionSpeed: 0.005,
+				transitionSpeed: 0.01,
 				postDrawDelay: 1
 			}
 		};
@@ -56,7 +56,7 @@ class Settings {
 		};
 
 		this.transitions = {
-			'tr_eyes': 'tr_eyes.png',
+			tr_eyes: 'tr_eyes.png',
 			'tr-checkwipe': 'tr-checkwipe.png',
 			'tr-checkwipe2': 'tr-checkwipe2.png',
 			'tr-clockwipe': 'tr-clockwipe.png',

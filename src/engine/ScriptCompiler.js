@@ -432,11 +432,13 @@ class ScriptCompiler {
 					if (_splitStr.length >= 4) _lineC.m_parameters.push(parseInt(_splitStr[3]));
 					if (_splitStr.length >= 5) _lineC.m_parameters.push(_splitStr[4]);
 					if (_splitStr.length >= 6) _lineC.m_parameters.push(_splitStr[5]);
+					if (_splitStr.length >= 7) _lineC.m_parameters.push(_splitStr[6]);
 				} else {
 					_lineC.m_parameters.push(0);
 					_lineC.m_parameters.push(0);
 					_lineC.m_parameters.push('1.0');
 					_lineC.m_parameters.push('1.0');
+					_lineC.m_parameters.push('tr-normal');
 				}
 
 				if (_splitStr[_splitStr.length - 1] === 'true') _lineC.m_parameters.push(true);

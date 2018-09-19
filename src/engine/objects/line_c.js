@@ -31,7 +31,7 @@ class line_c {
 	 * @param {Function} func
 	 */
 	setFunction(func) {
-		this.exec = (Engine) => {
+		this.exec = Engine => {
 			func.bind(this)(Engine);
 			if (this.m_skipToNextLine) Engine.ScriptHandler.NextLine();
 		};

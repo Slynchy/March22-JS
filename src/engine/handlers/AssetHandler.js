@@ -88,6 +88,7 @@ class AssetHandler {
 				this._loadedBg.bind(this)
 			);
 		}
+		this._loader.add('black', 'assets/backgrounds/black.png', this._loadedBg.bind(this));
 
 		// load chars
 		for (let i = 0; i < scriptObj.requiredAssets.characters.length; i++) {
@@ -103,10 +104,26 @@ class AssetHandler {
 		// load video
 
 		// load textboxes
-		this._loader.add('textbox_comment', 'assets/textbox/comment.png', this._loadedTextbox.bind(this));
-		this._loader.add('textbox_dialogue', 'assets/textbox/dialogue.png', this._loadedTextbox.bind(this));
-		this._loader.add('textbox_narrative', 'assets/textbox/narrative.png', this._loadedTextbox.bind(this));
-		this._loader.add('textbox_novel', 'assets/textbox/novel.png', this._loadedTextbox.bind(this));
+		this._loader.add(
+			'textbox_comment',
+			'assets/textbox/comment.png',
+			this._loadedTextbox.bind(this)
+		);
+		this._loader.add(
+			'textbox_dialogue',
+			'assets/textbox/dialogue.png',
+			this._loadedTextbox.bind(this)
+		);
+		this._loader.add(
+			'textbox_narrative',
+			'assets/textbox/narrative.png',
+			this._loadedTextbox.bind(this)
+		);
+		this._loader.add(
+			'textbox_novel',
+			'assets/textbox/novel.png',
+			this._loadedTextbox.bind(this)
+		);
 
 		// Load transitions
 		for (let k in this._transitions) {
