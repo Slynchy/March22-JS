@@ -82,13 +82,16 @@ class AssetHandler {
 
 		// load BGs
 		for (let i = 0; i < scriptObj.requiredAssets.backgrounds.length; i++) {
+			// FIXME: hack
+			if(scriptObj.requiredAssets.backgrounds[i] === 'black') continue;
+
 			this._loader.add(
 				scriptObj.requiredAssets.backgrounds[i],
 				'assets/backgrounds/' + scriptObj.requiredAssets.backgrounds[i] + '.jpg',
 				this._loadedBg.bind(this)
 			);
 		}
-		this._loader.add('black', 'assets/backgrounds/black.png', this._loadedBg.bind(this));
+		this._loader.add('black', 'assets/backgrounds/black.jpg', this._loadedBg.bind(this));
 
 		// load chars
 		for (let i = 0; i < scriptObj.requiredAssets.characters.length; i++) {
