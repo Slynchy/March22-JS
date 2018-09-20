@@ -23,14 +23,14 @@ function DrawBackground(Engine) {
 		if (typeof this.m_parameters[3] === 'string') {
 			this.m_parameters[3] = +this.m_parameters[3];
 		}
-		bg.w *= this.m_parameters[3];
+		bg.width *= this.m_parameters[3];
 	}
 
 	if (this.m_parameters[4]) {
 		if (typeof this.m_parameters[4] === 'string') {
 			this.m_parameters[4] = +this.m_parameters[4];
 		}
-		bg.h *= this.m_parameters[4];
+		bg.height *= this.m_parameters[4];
 	}
 
 	this.m_transition = this.m_parameters[5] || 'tr-normal';
