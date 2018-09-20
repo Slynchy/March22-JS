@@ -2,9 +2,13 @@ import './styles/style.css';
 
 require('./Settings.js');
 
-(function() {
-	let M22 = new (require('./engine/March22.js'))();
+global.__M22 = null;
 
-	M22.addViewToDocument();
-	M22.start();
+(function() {
+  let M22 = new (require('./engine/March22.js'))();
+
+  M22.addViewToDocument();
+  M22.start();
+
+  global.__M22 = M22;
 })();

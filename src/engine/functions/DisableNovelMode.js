@@ -1,5 +1,5 @@
 function DisableNovelMode(Engine) {
-	Engine.SceneHandler.textBox.disableNovelMode();
+  Engine.ScriptHandler.disableNovelMode();
 }
 
 module.exports = DisableNovelMode;

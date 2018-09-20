@@ -4,133 +4,207 @@ let TextStyle = require('pixi.js').TextStyle;
 let Text = require('./Text.js');
 
 class TextBox extends Container {
-	constructor(props) {
-		super();
+  constructor(props) {
+    super();
 
-		this._textbox = new Sprite(null, {});
-		this.addChild(this._textbox);
+    this.activeTextObject = null;
+    this.currentText = '';
+    this._speaker = null;
+    this._textbox = null;
+    this._textboxNovel = null;
+    this._text = null;
+    this._novelText = null;
+    this._activeAnim = null;
+    this._textbuffer = '';
 
-		this.currentText = '';
+    this._narrativeTexture = null;
+    this._dialogueTexture = null;
 
-		this._speaker = null;
+    this._textbox = new Sprite(null, {});
+    this.addChild(this._textbox);
+    this._textboxNovel = new Sprite(null, {});
+    this.addChild(this._textboxNovel);
 
-		let xOffset_text = 35;
-		let yOffset_text = 52;
-		this._text = new Text({
-			text: '',
-			x: xOffset_text,
-			y: yOffset_text,
-			style: new TextStyle({
-				align: 'left',
-				fontFamily: 'Comic Sans MS',
-				fill: '0xFEFEFE',
-				fontSize: 36,
-				wordWrap: true,
-				wordWrapWidth: (Settings.applicationSettings.width - xOffset_text - 20) * 2
-			})
-		});
-		this._text.scale.x = 0.5;
-		this._text.scale.y = 0.5;
-		this.addChild(this._text);
+    this._createTextObjects();
 
-		let xOffset_name = 20;
-		let yOffset_name = 9;
-		this._name = new Text({
-			text: '',
-			x: xOffset_name,
-			y: yOffset_name,
-			style: new TextStyle({
-				align: 'left',
-				fontFamily: 'Comic Sans MS',
-				fill: '0xfefefe',
-				fontSize: Settings.textbox.nameFontSize * 2
-			})
-		});
-		this._name.scale.x = 0.5;
-		this._name.scale.y = 0.5;
-		this._name.renderable = false;
-		this.addChild(this._name);
+    let xOffset_name = 20;
+    let yOffset_name = 9;
+    this._name = new Text({
+      text: '',
+      x: xOffset_name,
+      y: yOffset_name,
+      style: new TextStyle({
+        align: 'left',
+        fontFamily: 'Comic Sans MS',
+        fill: '0xfefefe',
+        fontSize: Settings.textbox.nameFontSize * 2
+      })
+    });
+    this._name.scale.x = 0.5;
+    this._name.scale.y = 0.5;
+    this._name.renderable = false;
+    this.addChild(this._name);
 
-		this.zOrder = 1000;
+    this.zOrder = 1000;
 
-		this._activeAnim = null;
+    if (props) Object.assign(this, props);
+  }
 
-		if (props) Object.assign(this, props);
-	}
+  _createTextObjects(){
+    let xOffset_text = 35;
+    let yOffset_text = 52;
+    this._text = new Text({
+      text: '',
+      x: xOffset_text,
+      y: yOffset_text,
+      style: new TextStyle({
+        align: 'left',
+        fontFamily: 'Comic Sans MS',
+        fill: '0xFEFEFE',
+        fontSize: 36,
+        wordWrap: true,
+        wordWrapWidth: (Settings.applicationSettings.width - xOffset_text - 20) * 2
+      })
+    });
+    this._text.scale.x = 0.5;
+    this._text.scale.y = 0.5;
+    this.addChild(this._text);
 
-	finishLine() {
-		if (this._activeAnim) clearInterval(this._activeAnim);
+    this._novelText = new Text({
+      text: '',
+      x: xOffset_text,
+      y: yOffset_text,
+      style: new TextStyle({
+        align: 'left',
+        fontFamily: 'Comic Sans MS',
+        fill: '0xFEFEFE',
+        fontSize: 36,
+        wordWrap: true,
+        wordWrapWidth: (Settings.applicationSettings.width - xOffset_text - 20) * 2
+      })
+    });
+    this._novelText.scale.x = 0.5;
+    this._novelText.scale.y = 0.5;
+    this.addChild(this._novelText);
+  }
 
-		this._text.text = this.currentText;
-	}
+  finishLine() {
+    if (this._activeAnim) clearInterval(this._activeAnim);
+    this.activeTextObject.text = this.currentText;
+  }
 
-	_updateSpeakerUI() {
-		this._name.renderable = !!this._speaker;
-		this._name.text = this._speaker ? this._speaker.name : '';
-		this._name.style.fill = this._speaker ? this._speaker.color.hexColor : '#fefefe';
-	}
+  _updateSpeakerUI() {
+    this._name.renderable = !!this._speaker;
+    this._name.text = this._speaker ? this._speaker.name : '';
+    this._name.style.fill = this._speaker ? this._speaker.color.hexColor : '#fefefe';
+  }
 
-	setSpeaker(val) {
-		this._speaker = val;
+  setSpeaker(val) {
+    this._speaker = val;
+    this._updateSpeakerUI();
+  }
 
-		this._updateSpeakerUI();
-	}
+  clearSpeaker() {
+    this._name.renderable = false;
+    this._speaker = null;
+  }
 
-	clearSpeaker() {
-		this._name.renderable = false;
-		this._speaker = null;
-	}
+  hasFinishedLine() {
+    return !(this.activeTextObject.text.length < this.currentText.length);
+  }
 
-	hasFinishedLine() {
-		return !(this._text.text.length < this.currentText.length);
-	}
+  setText(txt) {
+    clearInterval(this._activeAnim);
 
-	setText(txt) {
-		clearInterval(this._activeAnim);
+    if(!this._novelMode){
+      this.currentText = txt;
+      this.activeTextObject.text = '';
+    } else {
+      if(this.currentText === ''){
+        this.currentText += `${txt}`;
+      } else {
+        this.currentText += `\n\n${txt}`;
+      }
+    }
 
-		this.currentText = txt;
-		this._text.text = '';
+    this._activeAnim = setInterval(() => {
+      if (this.activeTextObject.text.length < this.currentText.length) {
+        this.activeTextObject.text = this.currentText.substr(0, this.activeTextObject.text.length + 1);
+      } else {
+        clearInterval(this._activeAnim);
+        return;
+      }
+    }, 32);
+  }
 
-		this._activeAnim = setInterval(() => {
-			if (this._text.text.length < this.currentText.length) {
-				this._text.text = this.currentText.substr(0, this._text.text.length + 1);
-			} else {
-				clearInterval(this._activeAnim);
-				return;
-			}
-		}, 32);
-	}
+  newPage(){
+    if(!this._novelMode) return;
 
-	setTextbox(texture) {
-		this._textbox.texture = texture;
-		this._textbox.width = this.width = texture.width;
-		this._textbox.height = this.height = texture.height;
+    this.activeTextObject.text = '';
+    this.currentText = '';
+  }
 
-		this.x = 0;
-		this.y = Settings.applicationSettings.height - this.height + Settings.textbox.yOffset;
-	}
+  setupTextboxTextures(obj){
+    this._textboxNovel.texture = (obj.novel);
+    this._textboxNovel.width = Settings.applicationSettings.width;
+    this._textboxNovel.height = Settings.applicationSettings.height;
 
-	hide() {
-		console.log('Hide');
+    this._narrativeTexture = obj.narrative;
+    this._dialogueTexture = obj.dialogue;
 
-		this.alpha = 0;
-		//this._text.hide();
-	}
+    this.setTextbox('narrative');
+  }
 
-	show() {
-		console.log('Show');
+  setTextbox(name) {
+    switch(name){
+    case 'novel':
+      this._novelMode = true;
+      this._textbox.renderable = false;
+      this._text.renderable = false;
+      this._textboxNovel.renderable = true;
+      this._novelText.renderable = true;
+      this.y = 0;
+      this.activeTextObject = this._novelText;
+      break;
+    case 'narrative':
+      this._novelMode = false;
+      this._textbox.renderable = true;
+      this._text.renderable = true;
+      this._textboxNovel.renderable = false;
+      this._novelText.renderable = false;
+      this._textbox.texture = (this._narrativeTexture);
+      this.activeTextObject = this._text;
+      this.y = Settings.applicationSettings.height - this.height + Settings.textbox.yOffset;
+      break;
+    case 'dialogue':
+      this._novelMode = false;
+      this._textbox.renderable = true;
+      this._text.renderable = true;
+      this._textboxNovel.renderable = false;
+      this._novelText.renderable = false;
+      this._textbox.texture = (this._dialogueTexture);
+      this.activeTextObject = this._text;
+      this.y = Settings.applicationSettings.height - this.height + Settings.textbox.yOffset;
+      break;
+    }
 
-		this.alpha = 1;
-		//this._text.show();
-	}
+    if(!this._novelMode){
+      this._textboxNovel.renderable = false;
+    }
+    // this._textbox.width = this.width = texture.width;
+    // this._textbox.height = this.height = texture.height;
+    //this.x = 0;
+  }
 
-	disableNovelMode() {
-		console.log('disableNovelMode');
-	}
+  hide() {
+    this.alpha = 0;
+    //this._text.hide();
+  }
 
-	enableNovelMode() {
-		console.log('enableNovelMode');
-	}
+  show() {
+    this.alpha = 1;
+    //this._text.show();
+  }
 }
 
 module.exports = TextBox;

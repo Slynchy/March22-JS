@@ -10,6 +10,8 @@
 
 	A light breeze causes the naked branches overhead to rattle like wooden windchimes.
 
+	Goto test_checkpnt
+
     //Goto debuggoto
 
 	DrawCharacter shizu behind_blank 0
@@ -215,6 +217,8 @@
 
 	ShowWindow
 
+--test_checkpnt
+
 	iwanako "HISAO!"
 
 	The beating in my chest suddenly stops, and I go weak at the knees.
@@ -225,7 +229,7 @@
 
 	ExecuteFunction snow_effect stop
 	StopMusic
-	Transition black tr-flashback 0
+	DrawBackground black 0 0 1.0 1.0 tr-flashback false
 
 	EnableNovelMode
 	ShowWindow
@@ -254,7 +258,8 @@
 	HideWindow
 	NewPage
 
-	Transition hosp_room tr_eyes out
+	//Transition hosp_room tr_eyes out
+	DrawBackground hosp_room 0 0 1.0 1.0 tr_eyes false
 
 	//scene bg hosp_room
 	//show sakura
