@@ -223,7 +223,7 @@ class ScriptCompiler {
 										variables
 									);
 
-									currentLine = this.CompileLine(currentLine, i, checkpoints);
+									currentLine = this.CompileLine(currentLine, i, checkpoints, lineCounter);
 
 									if (
 										currentLine.m_lineType !== this.LINETYPES.NULL_OPERATOR &&
@@ -253,7 +253,7 @@ class ScriptCompiler {
 		);
 	}
 
-	static CompileLine(_funcStr, _scriptPos, _chkpnt) {
+	static CompileLine(_funcStr, _scriptPos, _chkpnt, _lineCounter) {
 		let CURRENT_LINE_SPLIT;
 		let tempLine_c = new line_c();
 		_funcStr = _funcStr.trim();
@@ -270,7 +270,7 @@ class ScriptCompiler {
 		tempLine_c.m_lineType = ScriptCompiler.GetLineType(CURRENT_LINE_SPLIT[0]);
 
 		if (tempLine_c.m_lineType === ScriptCompiler.LINETYPES.NARRATIVE) {
-			_funcStr = _funcStr.replace('\\n', '\n');
+			_funcStr = _funcStr.replace(/\\n/g, '\n');
 			tempLine_c.m_lineContents = _funcStr;
 		} else if (tempLine_c.m_lineType === ScriptCompiler.LINETYPES.DIALOGUE) {
 			tempLine_c.m_lineContents = _funcStr;
@@ -286,17 +286,17 @@ class ScriptCompiler {
 				}
 			}
 		} else {
-			this.CompileFunction(tempLine_c, CURRENT_LINE_SPLIT, _chkpnt, _scriptPos);
+			this.CompileFunction(tempLine_c, CURRENT_LINE_SPLIT, _chkpnt, _scriptPos, _lineCounter);
 		}
 		return tempLine_c;
 	}
 
-	static CompileFunction(_lineC, _splitStr, _chkpnt, _scriptPos) {
+	static CompileFunction(_lineC, _splitStr, _chkpnt, _scriptPos, _lineCounter) {
 		switch (_lineC.m_lineType) {
 		case this.LINETYPES.CHECKPOINT:
 			_splitStr[0] = _splitStr[0].substring(2);
 			_splitStr[0] = _splitStr[0].trim();
-			_chkpnt.push(new script_checkpoint(_scriptPos, _splitStr[0]));
+			_chkpnt.push(new script_checkpoint(_lineCounter, _splitStr[0]));
 			break;
 		case this.LINETYPES.ANIMATION_TYPE:
 			if (_splitStr.length > 1) {
